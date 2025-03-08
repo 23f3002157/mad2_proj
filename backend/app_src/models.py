@@ -1,6 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
-
+from sqlalchemy import Integer, String, Boolean, Float
 db = SQLAlchemy()
 
 class ServiceCategory(db.Model):
@@ -12,11 +12,11 @@ class ServiceCategory(db.Model):
 
 class Service(db.Model):
     __tablename__ = 'Service'
-    service_ID = db.Column(db.Integer, primary_key=True)
-    service_Description = db.Column(db.String(40), nullable=False)
+    service_ID = db.Column(Integer, primary_key=True)
+    service_Description = db.Column(String(40), nullable=False)
     price = db.Column(db.Float, nullable=False)
     sCat_id = db.Column(db.String(40), db.ForeignKey('service_categories.sCat_id'), nullable=False)
-    created_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    created_date = db.Column(db.DateTime, nullable=False, default=datetime.now())
     modified_date = db.Column(db.DateTime)
     category = db.relationship('ServiceCategory', back_populates='services')
     service_requests = db.relationship('ServiceRequest', back_populates='service')
@@ -31,7 +31,7 @@ class Servicer(db.Model):
     address = db.Column(db.String(150), nullable=False)
     city = db.Column(db.String(40), nullable=False)
     state = db.Column(db.String(40), nullable=False)
-    created_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    created_date = db.Column(db.DateTime, nullable=False, default=datetime.now())
     modified_date = db.Column(db.DateTime, nullable=False)
     sCat_id = db.Column(db.String(40), db.ForeignKey('service_categories.sCat_id'), nullable=False)
     flag = db.Column(db.Integer, default=0)
@@ -39,6 +39,7 @@ class Servicer(db.Model):
     document_verify = db.Column(db.LargeBinary)
     servicer_photo = db.Column(db.LargeBinary)
     experience = db.Column(db.Integer)
+    rating = db.Column(Float, default=0)
     category = db.relationship('ServiceCategory', backref='servicers')
     service_requests = db.relationship('ServiceRequest', back_populates='servicer')
 
@@ -50,10 +51,11 @@ class CustomerDetails(db.Model):
     cust_password = db.Column(db.String(40), nullable=False)
     address = db.Column(db.String(100), nullable=False)
     postcode = db.Column(db.Integer, nullable=False)
-    create_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    create_date = db.Column(db.DateTime, nullable=False, default=datetime.now())
     modified_date = db.Column(db.DateTime, nullable=False)
     flags = db.Column(db.Integer, default=0)
     city = db.Column(db.String(40), nullable=False)
+    rating = db.Column(Float, default=0)
     service_requests = db.relationship('ServiceRequest', back_populates='customer')
 
 class Feedback(db.Model):
@@ -68,7 +70,7 @@ class ServiceRequest(db.Model):
     __tablename__ = 'service_request'
     serReq_id = db.Column(db.String(40), primary_key=True)
     service_id = db.Column(db.Integer, db.ForeignKey('Service.service_ID'), nullable=False)
-    created_date = db.Column(db.DateTime, default=datetime.utcnow)
+    created_date = db.Column(db.DateTime, default=datetime.now())
     service_date = db.Column(db.DateTime)
     completed_date = db.Column(db.DateTime)
     cust_id = db.Column(db.String(40), db.ForeignKey('customerDetails.cust_id'), nullable=False)

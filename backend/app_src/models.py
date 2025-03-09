@@ -10,6 +10,11 @@ class ServiceCategory(db.Model):
     created_date = db.Column(db.DateTime, nullable=False)
     services = db.relationship('Service', back_populates='category')
 
+    def convert_to_json(self):
+        return {
+            "sCat_id":self.sCat_id, "ser_desc":self.ser_desc, "created_date":str(self.created_date)[:-6]
+        }
+
 class Service(db.Model):
     __tablename__ = 'Service'
     service_ID = db.Column(Integer, primary_key=True)

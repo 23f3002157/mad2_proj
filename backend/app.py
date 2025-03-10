@@ -3,7 +3,7 @@ from flask import Flask, request
 from flask_restful import Resource, Api
 from app_src.models import db, CustomerDetails, Service, ServiceCategory, Servicer, ServiceRequest, Feedback
 from datetime import datetime
-from app_src.api_1 import homePageAPI, adminLogin, customerLogin, customerSignUp, adminDashboard
+from app_src.api_1 import homePageAPI, adminLogin, customerLogin, customerSignUp, adminDashboard, customerDashboard, adminNewService
 from flask_jwt_extended import JWTManager
 from datetime import timedelta
 
@@ -26,8 +26,10 @@ jwt = JWTManager(app)
 api.add_resource(homePageAPI, '/api/welcome')
 api.add_resource(customerSignUp, '/customerSignUp')
 api.add_resource(customerLogin, '/customerLogin')
+api.add_resource(customerDashboard, '/customerDashboard')
 api.add_resource(adminLogin, '/adminLogin')
 api.add_resource(adminDashboard, '/adminDashboard')
+api.add_resource(adminNewService, '/adminDashboard/new_service')
 
 
 

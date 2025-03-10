@@ -26,6 +26,11 @@ class Service(db.Model):
     category = db.relationship('ServiceCategory', back_populates='services')
     service_requests = db.relationship('ServiceRequest', back_populates='service')
 
+    def convert_to_json(self):
+        return {
+            "service_ID":self.service_ID, "service_description":self.service_Description,
+            "price":self.price, "sCat_id":self.sCat_id, "created_date":str(self.created_date), "modified_date":str(self.modified_date)
+        }
 class Servicer(db.Model):
     __tablename__ = 'Servicer'
     servicer_ID = db.Column(db.String(40), primary_key=True)
@@ -48,6 +53,13 @@ class Servicer(db.Model):
     category = db.relationship('ServiceCategory', backref='servicers')
     service_requests = db.relationship('ServiceRequest', back_populates='servicer')
 
+    def convert_to_json(self):
+        return {
+            "servicer_ID":self.servicer_ID, "firstname":self.firstname,"lastname":self.lastname,"email":self.email,
+            "pass_":self.pass_,"address":self.address, "city":self.city, "state":self.state, "created_date":str(self.created_date),
+            "modified_date":str(self.modified_date),"sCat_id":self.sCat_id, "flag":self.flag, "status":self.status, "experience":self.experience,
+            "rating":self.rating
+        }
 class CustomerDetails(db.Model):
     __tablename__ = 'customerDetails'
     cust_id = db.Column(db.String(40), primary_key=True)
@@ -63,6 +75,10 @@ class CustomerDetails(db.Model):
     rating = db.Column(Float, default=0)
     service_requests = db.relationship('ServiceRequest', back_populates='customer')
 
+    def convert_to_json(self):
+        return {"cust_id":self.cust_id, "name":self.name, "email":self.email, "cust_password":self.cust_password, "address":self.address,
+                "postcode":self.postcode,"create_date":str(self.create_date), "modified_date":str(self.modified_date), "flag":self.flags,"city":self.city,
+                "rating":self.rating}
 class Feedback(db.Model):
     __tablename__ = 'feedback'
     fid = db.Column(db.String(40), primary_key=True)
@@ -87,3 +103,10 @@ class ServiceRequest(db.Model):
     customer = db.relationship('CustomerDetails', back_populates='service_requests')
     servicer = db.relationship('Servicer', back_populates='service_requests')
     feedback = db.relationship('Feedback', back_populates='service_request', uselist=False)
+
+    def convert_to_json(self):
+        return {
+            "serReq_id":self.serReq_id, "service_id":self.service_id, "created_date":str(self.created_date),
+            "service_date":str(self.service_date), "completed_date":str(self.completed_date), "cust_id": self.cust_id,
+            "status":self.status, "servicer_id":self.servicer_id, "custname":self.custname, "servicername": self.servicername
+        }

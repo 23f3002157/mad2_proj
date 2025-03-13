@@ -3,7 +3,12 @@ from flask_restful import Resource, Api
 from .models import *
 from flask_jwt_extended import jwt_required, create_access_token, get_jwt_identity
 from .models import db, CustomerDetails, Service, ServiceCategory, Servicer, ServiceRequest, Feedback
-import random
+import random, time
+from flask_caching import Cache
+
+
+cache = Cache()
+
 
 
 class homePageAPI(Resource):
@@ -12,6 +17,8 @@ class homePageAPI(Resource):
         print(data)
         msg = f"Hello from homePageAPI: {data.get('name')}"
         return {"message": msg}, 200
+    
+    @cache.cached(timeout=10)
     def get(self):
         s=CustomerDetails.query.all()
         l=[]
@@ -43,6 +50,8 @@ class adminNewService(Resource):
     @jwt_required()
     def get(self):
         return {"message":"Form which displays various fields to create services, admin can create services"}
+    
+    @jwt_required()
     def post(self):
         data=request.json
         print(data)
@@ -59,6 +68,17 @@ class adminNewService(Resource):
         db.session.add(s)
         db.session.commit()
         return {"message":"service added successfully"}, 200
+    
+class adminCustomer(Resource):
+    @jwt_required()
+    def get(self):
+        s=CustomerDetails.query.all()
+        l=[]
+        for cat in s:
+            l.append(cat.convert_to_json())
+        print(l)
+        msg = f"Hello from homePageAPI get method household service:"
+        return {"message": msg, "data":l}, 200
 
 class servicerLogin(Resource):
     @jwt_required()

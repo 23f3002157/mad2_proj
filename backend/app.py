@@ -1,13 +1,14 @@
-import os
+import os, time
 from flask import Flask, request
 from flask_restful import Resource, Api
 from app_src.models import db, CustomerDetails, Service, ServiceCategory, Servicer, ServiceRequest, Feedback
 from datetime import datetime
-from app_src.api_1 import homePageAPI, adminLogin, customerLogin, customerSignUp, adminDashboard, customerDashboard, adminNewService
+from app_src.api_1 import homePageAPI, adminLogin, customerLogin, customerSignUp, adminDashboard, customerDashboard, adminNewService, adminCustomer, cache
 from flask_jwt_extended import JWTManager
 from datetime import timedelta
-
-
+from flask_caching import Cache
+from app_src.worker import celery
+from app_src.task import *
 
 base_directory = os.path.abspath(os.path.dirname(__file__))
 app = Flask(__name__)
@@ -15,13 +16,25 @@ app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///"+ os.path.join(base_director
 app.config["SECRET_KEY"] = "RSR_APP"
 app.config["JWT_SECRET_KEY"] = "RSR"
 app.config["JWT_ACCESS_TOKEN_EXPIRES"]=timedelta(hours=24)
+app.config["CACHE_TYPE"] = 'redis'
+app.config["CACHE_REDIS_HOST"] = "localhost"
+app.config["CACHE_REDIS_PORT"] = 6379
+app.config["CACHE_REDIS_DB"] = 0
+app.config["CACHE_DEFAULT_TIMEOUT"] = 300
+app.config["CACHE_REDIS_URL"] = "redis://localhost:6379"
+celery.conf.update(
+    broker_url="redis://localhost:6379/0",
+    result_backend = "redis://localhost:6379/0",
+    timezone = "Asia/Kolkata"
+)
 
 
 db.init_app(app)
-app.app_context().push()
 api = Api(app)
 jwt = JWTManager(app)
-
+cache.init_app(app)
+#celery.init_app(app)
+app.app_context().push()
 
 api.add_resource(homePageAPI, '/api/welcome')
 api.add_resource(customerSignUp, '/customerSignUp')
@@ -30,10 +43,15 @@ api.add_resource(customerDashboard, '/customerDashboard')
 api.add_resource(adminLogin, '/adminLogin')
 api.add_resource(adminDashboard, '/adminDashboard')
 api.add_resource(adminNewService, '/adminDashboard/new_service')
+api.add_resource(adminCustomer, '/adminDashboard/customer')
 
 
 
-
+@app.route("/test_cache")
+@cache.cached(timeout=10)
+def test_cache():
+    time.sleep(10)
+    return "Test works"
 
 @app.route('/')
 def home():

@@ -46,8 +46,8 @@ class Servicer(db.Model):
     sCat_id = db.Column(db.String(40), db.ForeignKey('service_categories.sCat_id'), nullable=False)
     flag = db.Column(db.Integer, default=0)
     status = db.Column(db.Integer, default=0)
-    document_verify = db.Column(db.LargeBinary)
-    servicer_photo = db.Column(db.LargeBinary)
+    document_verify = db.Column(db.String(200))
+    servicer_photo = db.Column(db.String(200))
     experience = db.Column(db.Integer)
     rating = db.Column(Float, default=0)
     category = db.relationship('ServiceCategory', backref='servicers')
@@ -58,7 +58,7 @@ class Servicer(db.Model):
             "servicer_ID":self.servicer_ID, "firstname":self.firstname,"lastname":self.lastname,"email":self.email,
             "pass_":self.pass_,"address":self.address, "city":self.city, "state":self.state, "created_date":str(self.created_date),
             "modified_date":str(self.modified_date),"sCat_id":self.sCat_id, "flag":self.flag, "status":self.status, "experience":self.experience,
-            "rating":self.rating
+            "rating":self.rating, "document_verify":self.document_verify, "servicer_photo":self.servicer_photo
         }
 class CustomerDetails(db.Model):
     __tablename__ = 'customerDetails'

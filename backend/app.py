@@ -9,6 +9,8 @@ from datetime import timedelta
 from flask_caching import Cache
 from app_src.worker import celery
 from app_src.task import *
+from flask_cors import CORS
+
 
 base_directory = os.path.abspath(os.path.dirname(__file__))
 app = Flask(__name__)
@@ -28,7 +30,7 @@ celery.conf.update(
     timezone = "Asia/Kolkata"
 )
 
-
+CORS(app)
 db.init_app(app)
 api = Api(app)
 jwt = JWTManager(app)

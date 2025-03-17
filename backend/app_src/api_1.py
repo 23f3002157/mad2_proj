@@ -36,7 +36,7 @@ class adminLogin(Resource):
         data = request.get_json()
         if data.get('email')=='admin@gmail.com' and data.get('password') == '1234':
             token = create_access_token("admin@1234")
-            return {"message":"Admin Login Successful","token":token,"key":"admin@1234"}, 200
+            return {"message":"Admin Login Successful","token":token,"key":"admin@1234", "login":1}, 200
         else:
             return {"message":"Incorrect email id/password, try again!"}, 400
         
@@ -80,16 +80,6 @@ class adminCustomer(Resource):
         msg = f"Hello from homePageAPI get method household service:"
         return {"message": msg, "data":l}, 200
 
-class servicerLogin(Resource):
-    @jwt_required()
-    def get(self):
-        return {"message":"Service Professional Login"}, 200
-    def post(self):
-        data = request.json
-        ser = Servicer.query.filter_by(email=data.get('email')).first()
-        if not ser:
-            return {"message":"Servicer not registered, try again later"}, 200
-
 class customerLogin(Resource):
     def post(self):
         data = request.get_json()
@@ -99,7 +89,7 @@ class customerLogin(Resource):
         if c:
             if c.cust_password == data.get("cust_password"):
                 token = create_access_token(c.cust_id)
-                return {"message":"Customer login successful!","token":token,"username":c.name,"email":c.email}, 200
+                return {"message":"Customer login successful!","token":token,"username":c.name,"email":c.email, "login": 1}, 200
             else:
                 return {"message":"Incorrect Password!"}, 400
         else:
@@ -124,7 +114,7 @@ class customerSignUp(Resource):
                                                 flags=0,city=data.get("city"), rating=0)
                     db.session.add(new_Customer)
                     db.session.commit()
-                    return {"message":"Customer sign up successful"}, 200
+                    return {"message":"Customer sign up successful", "status":1}, 200
         else:
             return {"message":"Missing fields"}, 400
         
@@ -133,3 +123,16 @@ class customerDashboard(Resource):
     def get(self):
         print(get_jwt_identity())
         return {"message":"Logged in","token":get_jwt_identity()}
+
+class servicerSignUp(Resource):
+    def post(self):
+        data = request.get_json()
+        
+class servicerLogin(Resource):
+    def get(self):
+        return {"message":"Service Professional Login"}, 200
+    def post(self):
+        data = request.json
+        ser = Servicer.query.filter_by(email=data.get('email')).first()
+        if not ser:
+            return {"message":"Servicer not registered, try again later"}, 200

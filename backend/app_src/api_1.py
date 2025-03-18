@@ -28,7 +28,14 @@ class homePageAPI(Resource):
         msg = f"Hello from homePageAPI get method household service:"
         return {"message": msg, "data":l}, 200
     
-
+class getServices(Resource):
+    def get(self):
+        s=ServiceCategory.query.all()
+        l=[]
+        for cat in s:    
+            l.append(cat.convert_to_json())
+        return l, 200
+    
 class adminLogin(Resource):
     def get(self):
         return {"message":"Welcome, admin!"},200
@@ -127,12 +134,43 @@ class customerDashboard(Resource):
 class servicerSignUp(Resource):
     def post(self):
         data = request.get_json()
-        
+        if data.get('firstname') and data.get('lastname') and data.get('email') and data.get('pass_') and data.get('address') and data.get("city") and data.get("state") and data.get("experience") and data.get("document_verify") and data.get("servicer_photo") and data.get("sCat_id"):
+            s = Servicer.query.filter_by(email=data.get("email")).first()
+            if(s):
+                return {"message":"Service provider exists, try another email","status":0}, 400
+            else:
+                if(len(data.get('pass_'))<8):
+                    return {"message":"Password must be greater than 8 characters","status":0}, 400
+                else:
+                    x = random.randint(10000,99999)
+                    new_servicer = Servicer(servicer_ID=str(x)+data.get('firstname'), firstname=data.get("firstname"), lastname=data.get("lastname"), email=data.get("email"), pass_=data.get("pass_"),
+                                            address=data.get("address"), city=data.get("city"), state=data.get("state"), created_date=datetime.now(), modified_date=datetime.now(),
+                                            sCat_id=data.get("sCat_id"), flag=0, status=0, experience=data.get("experience"), rating=0, document_verify=data.get("document_verify"), servicer_photo=data.get("servicer_photo"))
+                    db.session.add(new_servicer)
+                    db.session.commit()
+                    return {"message":"Service provider sign up successful", "status":1}, 200
+        else:
+            return {"message":"Fill in all fields","status":0}, 400
+        # "servicer_ID":self.servicer_ID, "firstname":self.firstname,"lastname":self.lastname,"email":self.email,
+        #     "pass_":self.pass_,"address":self.address, "city":self.city, "state":self.state, "created_date":str(self.created_date),
+        #     "modified_date":str(self.modified_date),"sCat_id":self.sCat_id, "flag":self.flag, "status":self.status, "experience":self.experience,
+        #     "rating":self.rating, "document_verify":self.document_verify, "servicer_photo":self.servicer_photo
 class servicerLogin(Resource):
     def get(self):
         return {"message":"Service Professional Login"}, 200
     def post(self):
         data = request.json
-        ser = Servicer.query.filter_by(email=data.get('email')).first()
-        if not ser:
-            return {"message":"Servicer not registered, try again later"}, 200
+        if not(data.get('email') and data.get('pass_')):
+            return {"message":"Missing fields, try again!"}, 400
+        else:
+            ser = Servicer.query.filter_by(email=data.get('email')).first()
+            if not ser:
+                return {"message":"Servicer not registered, try again later"}, 400
+            elif ser.status==0:
+                return {"message":"Servicer approval pending, contact administrator"}, 400
+            else:
+                if data.get('pass_') == ser.pass_:
+                    token = create_access_token(ser.servicer_ID)
+                    return {"message":"Servicer login successful!","token":token,"username":ser.firstname+" "+ser.lastname,"email":ser.email, "login": 1}, 200
+                else:
+                    return {"message":"Inccorect password"},400

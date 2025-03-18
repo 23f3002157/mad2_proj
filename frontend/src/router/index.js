@@ -5,6 +5,8 @@ import CustomerHome from '@/components/CustomerHome.vue'
 import CustomerLogin from '@/components/CustomerLogin.vue'
 import CustomerSignup from '@/components/CustomerSignup.vue'
 import ServicerHome from '@/components/ServicerHome.vue'
+import ServicerSignup from '@/components/ServicerSignup.vue'
+import ServicerLogin from '@/components/ServicerLogin.vue'
 // import HomeView from '../views/HomeView.vue'
 
 const router = createRouter({
@@ -39,6 +41,16 @@ const router = createRouter({
       path: '/servicer-home',
       name: 'servicer-home',
       component: ServicerHome
+    },
+    {
+      path: '/servicer-signup',
+      name: 'servicer-signup',
+      component: ServicerSignup
+    },
+    {
+      path: '/servicer-login',
+      name: 'servicer-login',
+      component: ServicerLogin
     },
   ],
 })

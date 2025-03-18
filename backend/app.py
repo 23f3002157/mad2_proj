@@ -4,6 +4,7 @@ from flask_restful import Resource, Api
 from app_src.models import db, CustomerDetails, Service, ServiceCategory, Servicer, ServiceRequest, Feedback
 from datetime import datetime
 from app_src.api_1 import homePageAPI, adminLogin, customerLogin, customerSignUp, adminDashboard, customerDashboard, adminNewService, adminCustomer, cache
+from app_src.api_1 import servicerLogin, servicerSignUp, getServices
 from flask_jwt_extended import JWTManager
 from datetime import timedelta
 from flask_caching import Cache
@@ -38,6 +39,7 @@ cache.init_app(app)
 #celery.init_app(app)
 app.app_context().push()
 
+api.add_resource(getServices, '/getServices')
 api.add_resource(homePageAPI, '/api/welcome')
 api.add_resource(customerSignUp, '/customerSignUp')
 api.add_resource(customerLogin, '/customerLogin')
@@ -46,7 +48,8 @@ api.add_resource(adminLogin, '/adminLogin')
 api.add_resource(adminDashboard, '/adminDashboard')
 api.add_resource(adminNewService, '/adminDashboard/new_service')
 api.add_resource(adminCustomer, '/adminDashboard/customer')
-
+api.add_resource(servicerLogin, '/servicerLogin')
+api.add_resource(servicerSignUp, '/servicerSignUp')
 
 
 @app.route("/test_cache")

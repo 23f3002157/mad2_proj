@@ -36,6 +36,41 @@ class getServices(Resource):
             l.append(cat.convert_to_json())
         return l, 200
     
+class getCustomers(Resource):
+    def get(self):
+        s=CustomerDetails.query.all()
+        l=[]
+        for cat in s:    
+            l.append(cat.convert_to_json())
+        return l, 200
+
+class blockCustomerAdmin(Resource):
+    @jwt_required()
+    def put(self, cust_id):
+        print(get_jwt_identity())
+        if get_jwt_identity() != "admin@1234":
+            return {"message":"Unauthorized access!"}, 401
+        cust = CustomerDetails.query.get(cust_id)
+        if cust:
+            cust.flags=1
+            db.session.commit()
+            return {"message":f"Customer {cust.name} blocked successfully!"}, 200
+        else:
+            return {"message":"Customer not found!"}, 404
+    
+    @jwt_required()
+    def patch(self, cust_id):
+        print(get_jwt_identity())
+        if get_jwt_identity() != "admin@1234":
+            return {"message":"Unauthorized access!"}, 401
+        cust = CustomerDetails.query.get(cust_id)
+        if cust:
+            cust.flags=0
+            db.session.commit()
+            return {"message":f"Customer {cust.name} unblocked successfully!"}, 200
+        else:
+            return {"message":"Customer not found!"}, 404
+
 class adminLogin(Resource):
     def get(self):
         return {"message":"Welcome, admin!"},200

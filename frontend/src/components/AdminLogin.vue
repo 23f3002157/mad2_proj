@@ -54,7 +54,7 @@ export default{
                         alert("Login Successful!");
                         console.log(result);
                         localStorage.setItem('adminAuthToken', result.token)
-                        this.$router.push('/adminDashboard');
+                        this.$router.push('/admin-dashboard');
                     }
                 }catch (error){
                     this.errorMessage=error;

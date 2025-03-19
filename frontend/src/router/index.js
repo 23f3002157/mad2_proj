@@ -7,6 +7,8 @@ import CustomerSignup from '@/components/CustomerSignup.vue'
 import ServicerHome from '@/components/ServicerHome.vue'
 import ServicerSignup from '@/components/ServicerSignup.vue'
 import ServicerLogin from '@/components/ServicerLogin.vue'
+import AdminDashboard from '@/components/AdminDashboard.vue'
+import AdminCustomerDetails from '@/components/AdminCustomerDetails.vue'
 // import HomeView from '../views/HomeView.vue'
 
 const router = createRouter({
@@ -21,6 +23,16 @@ const router = createRouter({
       path: '/admin-login',
       name: 'admin-login',
       component: AdminLogin,
+    },
+    {
+      path: '/admin-dashboard',
+      name: 'admin-dashboard',
+      component: AdminDashboard,
+    },
+    {
+      path: '/admin-dashboard/customerDetails',
+      name: 'admin-customerDetails',
+      component: AdminCustomerDetails,
     },
     {
       path: '/customer-home',

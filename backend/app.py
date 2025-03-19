@@ -4,7 +4,7 @@ from flask_restful import Resource, Api
 from app_src.models import db, CustomerDetails, Service, ServiceCategory, Servicer, ServiceRequest, Feedback
 from datetime import datetime
 from app_src.api_1 import homePageAPI, adminLogin, customerLogin, customerSignUp, adminDashboard, customerDashboard, adminNewService, adminCustomer, cache
-from app_src.api_1 import servicerLogin, servicerSignUp, getServices
+from app_src.api_1 import servicerLogin, servicerSignUp, getServices, getCustomers, blockCustomerAdmin
 from flask_jwt_extended import JWTManager
 from datetime import timedelta
 from flask_caching import Cache
@@ -40,6 +40,8 @@ cache.init_app(app)
 app.app_context().push()
 
 api.add_resource(getServices, '/getServices')
+api.add_resource(getCustomers, '/getCustomers')
+api.add_resource(blockCustomerAdmin, '/adminDashboard/customerBlock/<string:cust_id>')
 api.add_resource(homePageAPI, '/api/welcome')
 api.add_resource(customerSignUp, '/customerSignUp')
 api.add_resource(customerLogin, '/customerLogin')

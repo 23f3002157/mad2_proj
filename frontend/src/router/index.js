@@ -10,6 +10,8 @@ import ServicerLogin from '@/components/ServicerLogin.vue'
 import AdminDashboard from '@/components/AdminDashboard.vue'
 import AdminCustomerDetails from '@/components/AdminCustomerDetails.vue'
 import AdminServicerDetails from '@/components/AdminServicerDetails.vue'
+import AdminServicesDetails from '@/components/AdminServicesDetails.vue'
+import AdminNewService from '@/components/AdminNewService.vue'
 // import HomeView from '../views/HomeView.vue'
 
 const router = createRouter({
@@ -39,6 +41,16 @@ const router = createRouter({
       path: '/admin-dashboard/servicerDetails',
       name: 'admin-servicerDetails',
       component: AdminServicerDetails,
+    },
+    {
+      path: '/admin-dashboard/servicesDetails',
+      name: 'admin-servicesDetails',
+      component: AdminServicesDetails,
+    },
+    {
+      path: '/admin-dashboard/servicesDetails/newService',
+      name: 'admin-servicesDetails-newService',
+      component: AdminNewService,
     },
     {
       path: '/customer-home',

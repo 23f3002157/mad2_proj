@@ -5,7 +5,7 @@
         <h2 class="text-center mb-4">Admin Dashboard</h2>
         <div class="d-flex gap-2">
           <router-link to="/admin-dashboard/servicerDetails" class="btn btn-primary">Servicer Details</router-link>
-          <router-link to="/admin-new-service" class="btn btn-secondary">Add Service</router-link>
+          <router-link to="/admin-dashboard/servicesDetails" class="btn btn-secondary">Services</router-link>
           <router-link to="admin-dashboard/customerDetails" class="btn btn-danger">Customer Details</router-link>
         </div>
       </div>

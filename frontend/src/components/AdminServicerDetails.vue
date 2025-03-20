@@ -29,23 +29,6 @@
               <td v-if="servicer.flag != 1 && servicer.status != 0">{{ servicer.status }}</td>
               <td v-if="servicer.flag != 1 && servicer.status != 0">{{ servicer.experience }}</td>
             <td v-if="servicer.flag != 1 && servicer.status != 0"><button class="btn btn-danger" @click="toggleServicer(servicer.servicer_ID)">Block</button></td>
-
-            <!-- firstname VARCHAR(40) NOT NULL,
-  lastname VARCHAR(40) NOT NULL,
-  email VARCHAR(30) NOT NULL,
-  pass_ VARCHAR(20) NOT NULL,
-  address VARCHAR(150) NOT NULL,
-  city VARCHAR(40) NOT NULL,
-  state VARCHAR(40) NOT NULL,
-  created_date DATETIME NOT NULL,
-  modified_date DATETIME NOT NULL,
-  "sCat_id" VARCHAR(40) NOT NULL,
-  flag INTEGER,
-  status INTEGER,
-  experience INTEGER,
-  rating FLOAT,
-  servicer_photo VARCHAR(200),
-  document_verify VARCHAR(200) -->
           </tr>
         </tbody>
       </table>

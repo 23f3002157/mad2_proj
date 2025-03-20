@@ -36,6 +36,14 @@ class getServices(Resource):
             l.append(cat.convert_to_json())
         return l, 200
     
+class getServicesAdmin(Resource):
+    def get(self):
+        s=Service.query.all()
+        l=[]
+        for cat in s:    
+            l.append(cat.convert_to_json())
+        return l, 200
+    
 class getCustomers(Resource):
     def get(self):
         s=CustomerDetails.query.all()
@@ -134,9 +142,7 @@ class adminNewService(Resource):
     @jwt_required()
     def post(self):
         data=request.json
-        print(data)
         s1=Service.query.all()
-        print(s1)
         if not s1:
             sid=1
         else:
@@ -147,7 +153,7 @@ class adminNewService(Resource):
                   created_date=datetime.now(), modified_date=datetime.now())
         db.session.add(s)
         db.session.commit()
-        return {"message":"service added successfully"}, 200
+        return {"message":"service added successfully", "status":1}, 200
     
 class adminCustomer(Resource):
     @jwt_required()

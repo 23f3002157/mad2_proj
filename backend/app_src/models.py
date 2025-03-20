@@ -29,7 +29,7 @@ class Service(db.Model):
     def convert_to_json(self):
         return {
             "service_ID":self.service_ID, "service_description":self.service_Description,
-            "price":self.price, "sCat_id":self.sCat_id, "created_date":str(self.created_date), "modified_date":str(self.modified_date)
+            "price":self.price, "sCat_id":self.sCat_id, "created_date":str(self.created_date)[:19], "modified_date":str(self.modified_date)
         }
 class Servicer(db.Model):
     __tablename__ = 'Servicer'

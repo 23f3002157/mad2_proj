@@ -4,7 +4,7 @@ from flask_restful import Resource, Api
 from app_src.models import db, CustomerDetails, Service, ServiceCategory, Servicer, ServiceRequest, Feedback
 from datetime import datetime
 from app_src.api_1 import homePageAPI, adminLogin, customerLogin, customerSignUp, adminDashboard, customerDashboard, adminNewService, adminCustomer, cache
-from app_src.api_1 import servicerLogin, servicerSignUp, getServices, getCustomers, blockCustomerAdmin
+from app_src.api_1 import servicerLogin, servicerSignUp, getServices, getCustomers, blockCustomerAdmin, getServicers, toggleServicerAdmin
 from flask_jwt_extended import JWTManager
 from datetime import timedelta
 from flask_caching import Cache
@@ -41,7 +41,9 @@ app.app_context().push()
 
 api.add_resource(getServices, '/getServices')
 api.add_resource(getCustomers, '/getCustomers')
+api.add_resource(getServicers, '/getServicers')
 api.add_resource(blockCustomerAdmin, '/adminDashboard/customerBlock/<string:cust_id>')
+api.add_resource(toggleServicerAdmin, '/adminDashboard/servicerToggle/<string:servicer_id>')
 api.add_resource(homePageAPI, '/api/welcome')
 api.add_resource(customerSignUp, '/customerSignUp')
 api.add_resource(customerLogin, '/customerLogin')
@@ -74,12 +76,7 @@ class Home():
     def post(self):
         return {"post":"posts"},200
 home_apis = Home()
-@app.route('/api', methods=["GET", "POST"])
-def new_route():
-    if request.method=="GET":
-        return home_apis.get()
-    elif request.method == "POST":
-        return home_apis.post()
+
 class newHome():
     def get(self):
         return {"new":"home_api"}

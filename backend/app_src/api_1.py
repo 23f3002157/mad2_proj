@@ -44,6 +44,14 @@ class getCustomers(Resource):
             l.append(cat.convert_to_json())
         return l, 200
 
+class getServicers(Resource):
+    def get(self):
+        s=Servicer.query.all()
+        l=[]
+        for cat in s:    
+            l.append(cat.convert_to_json())
+        return l, 200
+
 class blockCustomerAdmin(Resource):
     @jwt_required()
     def put(self, cust_id):
@@ -70,6 +78,36 @@ class blockCustomerAdmin(Resource):
             return {"message":f"Customer {cust.name} unblocked successfully!"}, 200
         else:
             return {"message":"Customer not found!"}, 404
+
+class toggleServicerAdmin(Resource):
+    @jwt_required()
+    def put(self, servicer_id):
+        print(get_jwt_identity())
+        if get_jwt_identity() != "admin@1234":
+            return {"message":"Unauthorized access!"}, 401
+        servicer = Servicer.query.get(servicer_id)
+        if servicer:
+            print(servicer.flag)
+            if servicer.flag==1:
+                servicer.flag=0
+            else:    
+                servicer.flag=1
+            db.session.commit()
+            return {"message":f"Servicer toggled successfully!"}, 200
+        else:
+            return {"message":"Servicer not found!"}, 404
+        
+    @jwt_required()
+    def patch(self, servicer_id):
+        print(get_jwt_identity())
+        if get_jwt_identity() != "admin@1234":
+            return {"message":"Unauthorized access!"}, 401
+        servicer = Servicer.query.get(servicer_id)
+        if servicer:
+                servicer.status=1
+                db.session.commit()
+                return {"message":"Servicer Aproved successfully!"}, 200
+            
 
 class adminLogin(Resource):
     def get(self):
@@ -129,11 +167,14 @@ class customerLogin(Resource):
             return {"message":"Missing fields, try again!"}, 400
         c = CustomerDetails.query.filter_by(email=data.get("email")).first()
         if c:
-            if c.cust_password == data.get("cust_password"):
-                token = create_access_token(c.cust_id)
-                return {"message":"Customer login successful!","token":token,"username":c.name,"email":c.email, "login": 1}, 200
+            if c.flags==1:
+                return {"message":"Customer blocked, contact administrator"}, 400
             else:
-                return {"message":"Incorrect Password!"}, 400
+                if c.cust_password == data.get("cust_password"):
+                    token = create_access_token(c.cust_id)
+                    return {"message":"Customer login successful!","token":token,"username":c.name,"email":c.email, "login": 1}, 200
+                else:
+                    return {"message":"Incorrect Password!"}, 400
         else:
             return {"message":"User does not exist, please register"}, 404
 
@@ -205,7 +246,10 @@ class servicerLogin(Resource):
                 return {"message":"Servicer approval pending, contact administrator"}, 400
             else:
                 if data.get('pass_') == ser.pass_:
-                    token = create_access_token(ser.servicer_ID)
-                    return {"message":"Servicer login successful!","token":token,"username":ser.firstname+" "+ser.lastname,"email":ser.email, "login": 1}, 200
+                    if ser.flag==1:
+                        return {"message":"Servicer blocked, contact administrator"}, 400
+                    else:
+                        token = create_access_token(ser.servicer_ID)
+                        return {"message":"Servicer login successful!","token":token,"username":ser.firstname+" "+ser.lastname,"email":ser.email, "login": 1}, 200
                 else:
                     return {"message":"Inccorect password"},400

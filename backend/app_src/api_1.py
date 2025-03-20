@@ -155,6 +155,30 @@ class adminNewService(Resource):
         db.session.commit()
         return {"message":"service added successfully", "status":1}, 200
     
+class adminEditService(Resource):
+    @jwt_required()
+    def put(self, service_id):
+        s=Service.query.filter_by(service_ID=service_id).first()
+        if s:
+            db.session.delete(s)
+            db.session.commit()
+            return {"message":"service deleted successfully", "status":1}, 200
+        else:
+            return {"message":"service not found", "status":0}, 404
+    
+    @jwt_required()
+    def patch(self, service_id):
+        data = request.json
+        s=Service.query.filter_by(service_ID=data.get("service_ID")).first()
+        if s:
+            s.service_Description=data.get("service_Description")
+            s.price=data.get("price")
+            s.sCat_id=data.get("sCat_id")
+            s.modified_date=datetime.now()
+            db.session.commit()
+            return {"message":"service updated successfully", "status":1}, 200
+        else:
+            return {"message":"service not found", "status":0}, 404
 class adminCustomer(Resource):
     @jwt_required()
     def get(self):

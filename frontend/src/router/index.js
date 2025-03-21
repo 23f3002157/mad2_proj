@@ -12,6 +12,8 @@ import AdminCustomerDetails from '@/components/AdminCustomerDetails.vue'
 import AdminServicerDetails from '@/components/AdminServicerDetails.vue'
 import AdminServicesDetails from '@/components/AdminServicesDetails.vue'
 import AdminNewService from '@/components/AdminNewService.vue'
+import AdminSearch from '@/components/AdminSearch.vue'
+import AdminSummary from '@/components/AdminSummary.vue'
 // import HomeView from '../views/HomeView.vue'
 
 const router = createRouter({
@@ -31,6 +33,16 @@ const router = createRouter({
       path: '/admin-dashboard',
       name: 'admin-dashboard',
       component: AdminDashboard,
+    },
+    {
+      path: '/admin-dashboard/search',
+      name: 'admin-search',
+      component: AdminSearch,
+    },
+    {
+      path: '/admin-dashboard/summary',
+      name: 'admin-summary',
+      component: AdminSummary,
     },
     {
       path: '/admin-dashboard/customerDetails',

@@ -6,7 +6,9 @@
         <div class="d-flex gap-2">
           <router-link to="/admin-dashboard/servicerDetails" class="btn btn-primary">Servicer Details</router-link>
           <router-link to="/admin-dashboard/servicesDetails" class="btn btn-secondary">Services</router-link>
-          <router-link to="admin-dashboard/customerDetails" class="btn btn-danger">Customer Details</router-link>
+          <router-link to="/admin-dashboard/customerDetails" class="btn btn-danger">Customer Details</router-link>
+          <router-link to="/admin-dashboard/search" class="btn btn-warning">Search</router-link>
+          <router-link to="/admin-dashboard/summary" class="btn btn-info">Summary</router-link>
         </div>
       </div>
     </div>
@@ -15,6 +17,7 @@
 
 <script>
 export default {
-  name: 'AdminDashboard'
+  name: 'AdminDashboard',
+  
 }
 </script>

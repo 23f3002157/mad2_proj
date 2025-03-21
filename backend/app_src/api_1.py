@@ -100,6 +100,7 @@ class toggleServicerAdmin(Resource):
                 servicer.flag=0
             else:    
                 servicer.flag=1
+            servicer.modified_date=datetime.now()
             db.session.commit()
             return {"message":f"Servicer toggled successfully!"}, 200
         else:
@@ -171,7 +172,7 @@ class adminEditService(Resource):
         data = request.json
         s=Service.query.filter_by(service_ID=data.get("service_ID")).first()
         if s:
-            s.service_Description=data.get("service_Description")
+            s.service_Description=data.get("service_description")
             s.price=data.get("price")
             s.sCat_id=data.get("sCat_id")
             s.modified_date=datetime.now()
@@ -190,6 +191,35 @@ class adminCustomer(Resource):
         msg = f"Hello from homePageAPI get method household service:"
         return {"message": msg, "data":l}, 200
 
+class adminSearch(Resource):
+    @jwt_required()
+    def post(self):
+        data = request.json
+        print(data)
+        if(data.get("searchBy")=="customer"):
+            s=CustomerDetails.query.filter_by(name=data.get("searchQuery")).first()
+            if s:
+                return {"message":"customer found", "data":s.convert_to_json(), "stat":1}, 200
+            else:
+                 return {"message":"not found", "stat":0}, 400
+        elif(data.get("searchBy")=="servicer"):
+            s=Servicer.query.filter_by(firstname=data.get("searchQuery")).first()
+            if s:
+                return {"message":"servicer found", "data":s.convert_to_json(), "stat":1}, 200
+            return {"message":"servicer not found","stat":0}, 400
+
+class adminSummary(Resource):
+    @jwt_required()
+    def get(self):
+        s=Service.query.all()
+        c=CustomerDetails.query.all()
+        s1=ServiceRequest.query.all()
+        s2=Servicer.query.all()
+        totalServices, totalCustomers, totalServiceRequests, totalServicers = len(s), len(c), len(s1), len(s2)
+
+        c_1=CustomerDetails.query.filter_by(flags=1).all()
+        blockedCust, activeCust = len(c_1), totalCustomers-len(c_1)
+        return {"data_1":[totalServices, totalCustomers, totalServiceRequests, totalServicers], "data_2":[blockedCust, activeCust]}, 200
 class customerLogin(Resource):
     def post(self):
         data = request.get_json()

@@ -2,31 +2,44 @@
 <html>
 
 <head>
-    <style>
-        .container {
-            text-shadow: 10px 10px 10px #000000;
-            background: linear-gradient(to right, #00000088, #ffffff1d);
-            color: rgb(198, 198, 198);
-            padding-bottom: 10px;
-            padding-left: 5px;
-        }
-    </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 </head>
 
 <body>
-    <div class="container">
-        <header>
-            <h1>Monthly Report</h1>
+    <div class="container bg-dark text-light p-4 rounded">
+        <header class="text-center mb-4">
+            <h1 class="text-warning">Daily Reminder - Unvisited Service Requests</h1>
         </header>
-
-        <main>
-            <p>{{ user }}</p>
-            <p>{{ data }}</p>
-            <p>Best regards, <br>hello</p>
-        </main>
-
-        <footer>
-            This email was sent from <i>GFG</i>.
+        <p class="fs-5">Greetings {{ user }},</p>
+        <p class="fs-6">Below are the pending service requests that are yet to be visited.</p>
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover text-light">
+                <thead class="table-warning text-dark">
+                    <tr>
+                        <th>Service Request ID</th>
+                        <th>Service ID</th>
+                        <th>Service Name</th>
+                        <th>Customer Name</th>
+                        <th>Service Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for request in data %}
+                        <tr>
+                            <td>{{ request.serReq_id }}</td>
+                            <td>{{ request.service_id }}</td>
+                            <td>{{ request.service_Description }}</td>
+                            <td>{{ request.custname }}</td>
+                            <td>{{ request.service_date }}</td>
+                            <td>{{ request.status }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <footer class="text-center mt-4 py-3 border-top">
+            <p class="mb-0">This email was sent from <strong>Urban Services - Admin</strong>.</p>
         </footer>
     </div>
 </body>

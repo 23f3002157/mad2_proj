@@ -7,6 +7,7 @@ from app_src.api_1 import homePageAPI, adminLogin, customerLogin, customerSignUp
 from app_src.api_1 import servicerLogin, servicerSignUp, getServices, getCustomers, blockCustomerAdmin, getServicers, toggleServicerAdmin
 from app_src.api_1 import getServicesAdmin, adminEditService, adminSearch, adminSummary, getCustomerDetails, getServiceRequest
 from app_src.api_1 import getServicersCustomer, customerServiceRequest, deleteCustomerRequest, updateCustomerRequest, customerSearch
+from app_src.api_1 import customerSummary
 from flask_jwt_extended import JWTManager
 from datetime import timedelta
 from flask_caching import Cache
@@ -58,6 +59,7 @@ api.add_resource(customerServiceRequest, '/customerDashboard/serviceRequest')
 api.add_resource(deleteCustomerRequest, '/customerDashboard/deleteRequest/<string:serReq_id>')
 api.add_resource(updateCustomerRequest, '/customerDashboard/updateRequest')
 api.add_resource(customerSearch, '/customerDashboard/search')
+api.add_resource(customerSummary, '/customerDashboard/summary')
 api.add_resource(adminLogin, '/adminLogin')
 api.add_resource(adminDashboard, '/adminDashboard')
 api.add_resource(adminNewService, '/adminDashboard/new_service')

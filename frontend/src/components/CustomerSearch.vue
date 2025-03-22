@@ -1,6 +1,6 @@
 <template>
     <div>
-      <h3>Admin Search</h3>
+      <h3>Customer Search</h3>
       <form @submit.prevent="searchServicer">
         <div class="input-group mb-3 input-group-sm" style="width: 1000px;">
           <input type="text" class="form-control" v-model="searchQuery" placeholder="Search by name or email" />

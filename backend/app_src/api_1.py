@@ -179,6 +179,21 @@ class customerSearch(Resource):
         else:
             return {"message":"Something went wrong", "stat":0}, 400
 
+class customerSummary(Resource):
+    @jwt_required()
+    def get(self):
+        cust_id = get_jwt_identity()
+        s1=ServiceRequest.query.filter_by(cust_id=cust_id).all()
+        totalRequests, totalPending, totalCompleted = 0,0,0
+        d={}
+        for s in s1:
+            if s.status == "REQUESTED":
+                totalPending+=1
+            elif s.status == "COMPLETED":
+                totalCompleted+=1
+            
+        totalRequests+=len(s1)
+        return {"data_1":[totalPending, totalCompleted, totalRequests]}, 200
 class adminLogin(Resource):
     def get(self):
         return {"message":"Welcome, admin!"},200

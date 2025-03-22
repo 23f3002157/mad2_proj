@@ -9,7 +9,7 @@
       <div class="col-auto">
         <router-link to="/customerDashboard/new_service" class="btn btn-secondary mx-2">Create new Service</router-link>
         <router-link to="/customerDashboard/search" class="btn btn-success mx-2">Search</router-link>
-        <router-link to="/customer-support" class="btn btn-info mx-2">Summary</router-link>
+        <router-link to="/customerDashboard/summary" class="btn btn-info mx-2">Summary</router-link>
       </div>
     </div>
     <div class="row">

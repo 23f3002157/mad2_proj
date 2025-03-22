@@ -57,8 +57,9 @@ class getServicersCustomer(Resource):
     def get(self, sCat_id):
         s=Servicer.query.filter_by(sCat_id=sCat_id).all()
         l=[]
-        for cat in s:    
-            l.append(cat.convert_to_json())
+        for cat in s:
+            if cat.status==1:    
+                l.append(cat.convert_to_json())
         return l, 200
     
 class getCustomers(Resource):
@@ -452,3 +453,50 @@ class servicerLogin(Resource):
                         return {"message":"Servicer login successful!","token":token,"username":ser.firstname+" "+ser.lastname,"email":ser.email, "login": 1}, 200
                 else:
                     return {"message":"Inccorect password"},400
+                
+class getServiceRequestsServicer(Resource):
+    @jwt_required()
+    def get(self):
+        servicer_id=get_jwt_identity()
+        print(servicer_id)
+        s1=ServiceRequest.query.filter_by(servicer_id=servicer_id).all()
+        l=[]
+        for s in s1:
+            l.append(s.convert_to_json())
+        return {"data":l, "stat":1}, 200
+
+class updateRequestServicer(Resource):
+    @jwt_required()
+    def put(self):
+        data = request.get_json()
+        if data.get("status")=="ACCEPT":
+            s=ServiceRequest.query.filter_by(servicer_id=get_jwt_identity(), serReq_id=data.get("serReq_id")).first()
+            s.status="ACCEPTED"
+            db.session.commit()
+            return {"message":"Service request accepted successfully", "status":1}, 200
+        elif data.get("status")=="REJECT":
+            s=ServiceRequest.query.filter_by(servicer_id=get_jwt_identity(), serReq_id=data.get("serReq_id")).first()
+            s.status="REJECTED"
+            db.session.commit()
+            return {"message":"Service request rejected successfully", "status":1}, 200
+        
+class closeServiceCutomer(Resource):
+    @jwt_required()
+    def post(self):
+        data=request.json
+        x=data.get("serReq_id")
+        s=ServiceRequest.query.filter_by(serReq_id=x).first()
+        s.status="COMPLETED"
+        db.session.commit()
+#         fid VARCHAR(40) NOT NULL,
+#   "serReq_id" VARCHAR(40) NOT NULL,
+#   ratings INTEGER,
+#   comments VARCHAR(100),
+        f=Feedback(fid=random.randint(10000,99999),serReq_id=x,ratings=int(data.get("rating")), comments=data.get("comment"))
+        s1=Servicer.query.filter_by(servicer_ID=data.get("servicer_id")).first()
+        x=s1.rating+int(data.get("rating"))//2
+        s1.rating=x
+        db.session.add(f)
+        db.session.commit()
+        return {"message":"Service request completed successfully", "status":1}, 200
+    

@@ -7,7 +7,7 @@ from app_src.api_1 import homePageAPI, adminLogin, customerLogin, customerSignUp
 from app_src.api_1 import servicerLogin, servicerSignUp, getServices, getCustomers, blockCustomerAdmin, getServicers, toggleServicerAdmin
 from app_src.api_1 import getServicesAdmin, adminEditService, adminSearch, adminSummary, getCustomerDetails, getServiceRequest
 from app_src.api_1 import getServicersCustomer, customerServiceRequest, deleteCustomerRequest, updateCustomerRequest, customerSearch
-from app_src.api_1 import customerSummary
+from app_src.api_1 import customerSummary, getServiceRequestsServicer, updateRequestServicer, closeServiceCutomer
 from flask_jwt_extended import JWTManager
 from datetime import timedelta
 from flask_caching import Cache
@@ -69,7 +69,9 @@ api.add_resource(adminSearch, '/adminDashboard/search')
 api.add_resource(adminSummary, '/adminDashboard/summary')
 api.add_resource(servicerLogin, '/servicerLogin')
 api.add_resource(servicerSignUp, '/servicerSignUp')
-
+api.add_resource(getServiceRequestsServicer, '/servicerDashboard/serviceRequests')
+api.add_resource(updateRequestServicer, '/servicerDashboard/updateRequestServicer')
+api.add_resource(closeServiceCutomer, '/servicerDashboard/closeServiceCutomer')
 
 @app.route("/test_cache")
 @cache.cached(timeout=10)

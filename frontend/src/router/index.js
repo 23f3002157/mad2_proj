@@ -18,6 +18,7 @@ import CustomerDashboard from '@/components/CustomerDashboard.vue'
 import CustomerNewService from '@/components/CustomerNewService.vue'
 import CustomerSearch from '@/components/CustomerSearch.vue'
 import CustomerSummary from '@/components/CustomerSummary.vue'
+import ServicerDashboard from '@/components/ServicerDashboard.vue'
 // import HomeView from '../views/HomeView.vue'
 
 const router = createRouter({
@@ -117,6 +118,11 @@ const router = createRouter({
       path: '/servicer-login',
       name: 'servicer-login',
       component: ServicerLogin
+    },
+    {
+      path: '/servicerDashboard',
+      name: 'servicer-dashboard',
+      component: ServicerDashboard
     },
   ],
 })

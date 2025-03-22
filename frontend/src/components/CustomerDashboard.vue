@@ -35,7 +35,7 @@
               <td>{{ order.servicername }}</td>
               <td><button class="btn btn-primary" v-if="order.status === 'REQUESTED'" @click="openEditModal_1(order)">EDIT</button>
                 <button class="btn btn-danger" v-if="order.status === 'REQUESTED'" @click="deleteDetails(order.serReq_id)">DELETE</button>
-                <button class="btn btn-warning" v-if="order.status === 'COMPLETED'" @click="openEditModal_2(order)">FEEDBACK</button>
+                <button class="btn btn-warning" v-if="order.status === 'ACCEPTED'" @click="openEditModal_2(order)">CLOSE SERVICE</button>
               </td>
             </tr>
           </tbody>
@@ -78,6 +78,55 @@
           </div>
         </div>
       </div>
+
+      <div class="modal fade" id="editServiceModal_2" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Close Service Request</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <form @submit.prevent="closeService">
+                <div class="mb-3">
+                <label class="form-label">Service Request ID</label>
+                <input type="text" v-model="selectedServiceReq.serReq_id" class="form-control" disabled>
+              </div>
+                <div class="mb-3">
+                  <label class="form-label">Service ID</label>
+                  <input type="text" v-model="selectedServiceReq.service_id" class="form-control" disabled>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Servicer Name</label>
+                  <input type="text" v-model="selectedServiceReq.servicername" class="form-control" disabled>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Servicer ID</label>
+                  <input type="text" v-model="selectedServiceReq.servicer_id" class="form-control" disabled>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Rating</label>
+                  <select class="form-select" v-model="selectedServiceReq.rating" required>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                  </select>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Comment</label>
+                  <textarea class="form-control" v-model="selectedServiceReq.comment" rows="3"></textarea>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
 </template>
 
 <script>
@@ -91,6 +140,7 @@ export default {
       servicers: [],
       selectedServiceReq: {},
       editModal: null,
+      editModal_2: null,
       tempSer: []
     }
   },
@@ -161,6 +211,11 @@ export default {
         // this.fetchServicers(order.sCat_id)
         this.editModal.show();
       },
+      openEditModal_2(order){
+        this.selectedServiceReq = { ...order };
+        console.log(this.selectedServiceReq);
+        this.editModal_2.show();
+      },
       async updateService(){
           const response = await fetch('http://127.0.0.1:5000//customerDashboard/updateRequest',{
             method:"PUT",
@@ -172,6 +227,19 @@ export default {
           }).then(response => response.json())
           alert("Updated successfully");
           this.getServiceRequests();
+          this.editModal.hide();
+      },
+      async closeService(){
+        const response = await fetch("http://127.0.0.1:5000/servicerDashboard/closeServiceCutomer",{
+          method:"POST",
+          headers:{
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem("customerAuthToken")}`
+          },
+          body: JSON.stringify(this.selectedServiceReq)
+        }).then(response => response.json())
+        alert("Closed successfully");
+        this.getServiceRequests();
       }
   },
   mounted() {
@@ -179,6 +247,7 @@ export default {
     this.getServicers()
     this.getServiceRequests()
     this.editModal = new Modal(document.getElementById('editServiceModal_1'));
+    this.editModal_2 = new Modal(document.getElementById('editServiceModal_2'));
   }
 }
 </script>

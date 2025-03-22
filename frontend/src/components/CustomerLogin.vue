@@ -55,7 +55,7 @@ export default {
                         alert("Login Successful!");
                         console.log(result);
                         localStorage.setItem('customerAuthToken', result.token)
-                        this.$router.push('/customer-dashboard');
+                        this.$router.push('/customerDashboard');
                     }
                 }catch (error){
                     this.errorMessage=error;

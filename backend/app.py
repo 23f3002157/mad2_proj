@@ -5,7 +5,8 @@ from app_src.models import db, CustomerDetails, Service, ServiceCategory, Servic
 from datetime import datetime
 from app_src.api_1 import homePageAPI, adminLogin, customerLogin, customerSignUp, adminDashboard, customerDashboard, adminNewService, adminCustomer, cache
 from app_src.api_1 import servicerLogin, servicerSignUp, getServices, getCustomers, blockCustomerAdmin, getServicers, toggleServicerAdmin
-from app_src.api_1 import getServicesAdmin, adminEditService, adminSearch, adminSummary
+from app_src.api_1 import getServicesAdmin, adminEditService, adminSearch, adminSummary, getCustomerDetails, getServiceRequest
+from app_src.api_1 import getServicersCustomer, customerServiceRequest, deleteCustomerRequest, updateCustomerRequest, customerSearch
 from flask_jwt_extended import JWTManager
 from datetime import timedelta
 from flask_caching import Cache
@@ -44,12 +45,19 @@ api.add_resource(getServices, '/getServices')
 api.add_resource(getServicesAdmin, '/getServicesAdmin')
 api.add_resource(getCustomers, '/getCustomers')
 api.add_resource(getServicers, '/getServicers')
+api.add_resource(getServicersCustomer, '/getServicersCustomer/<string:sCat_id>')
+api.add_resource(getServiceRequest, '/getServiceRequest')
 api.add_resource(blockCustomerAdmin, '/adminDashboard/customerBlock/<string:cust_id>')
 api.add_resource(toggleServicerAdmin, '/adminDashboard/servicerToggle/<string:servicer_id>')
 api.add_resource(homePageAPI, '/api/welcome')
 api.add_resource(customerSignUp, '/customerSignUp')
 api.add_resource(customerLogin, '/customerLogin')
 api.add_resource(customerDashboard, '/customerDashboard')
+api.add_resource(getCustomerDetails,'/customerDashboard/getDetails')
+api.add_resource(customerServiceRequest, '/customerDashboard/serviceRequest')
+api.add_resource(deleteCustomerRequest, '/customerDashboard/deleteRequest/<string:serReq_id>')
+api.add_resource(updateCustomerRequest, '/customerDashboard/updateRequest')
+api.add_resource(customerSearch, '/customerDashboard/search')
 api.add_resource(adminLogin, '/adminLogin')
 api.add_resource(adminDashboard, '/adminDashboard')
 api.add_resource(adminNewService, '/adminDashboard/new_service')

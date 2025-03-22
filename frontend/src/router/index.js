@@ -14,6 +14,9 @@ import AdminServicesDetails from '@/components/AdminServicesDetails.vue'
 import AdminNewService from '@/components/AdminNewService.vue'
 import AdminSearch from '@/components/AdminSearch.vue'
 import AdminSummary from '@/components/AdminSummary.vue'
+import CustomerDashboard from '@/components/CustomerDashboard.vue'
+import CustomerNewService from '@/components/CustomerNewService.vue'
+import CustomerSearch from '@/components/CustomerSearch.vue'
 // import HomeView from '../views/HomeView.vue'
 
 const router = createRouter({
@@ -78,6 +81,21 @@ const router = createRouter({
       path: '/customer-signup',
       name: 'customer-signup',
       component: CustomerSignup
+    },
+    {
+      path: '/customerDashboard',
+      name: 'customer-dashboard',
+      component: CustomerDashboard
+    },
+    {
+      path: '/customerDashboard/new_service',
+      name: 'customer-dashboard-newService',
+      component: CustomerNewService
+    },
+    {
+      path: '/customerDashboard/search',
+      name: 'customer-dashboard-search',
+      component: CustomerSearch
     },
     {
       path: '/servicer-home',

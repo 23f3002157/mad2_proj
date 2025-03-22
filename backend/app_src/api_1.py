@@ -28,6 +28,15 @@ class homePageAPI(Resource):
         msg = f"Hello from homePageAPI get method household service:"
         return {"message": msg, "data":l}, 200
     
+class getServiceRequest(Resource):
+    @jwt_required()
+    def get(self):
+        cust_id = get_jwt_identity()
+        s=ServiceRequest.query.filter_by(cust_id=cust_id).all()
+        l=[]
+        for cat in s:    
+            l.append(cat.convert_to_json())
+        return l, 200
 class getServices(Resource):
     def get(self):
         s=ServiceCategory.query.all()
@@ -39,6 +48,14 @@ class getServices(Resource):
 class getServicesAdmin(Resource):
     def get(self):
         s=Service.query.all()
+        l=[]
+        for cat in s:    
+            l.append(cat.convert_to_json())
+        return l, 200
+
+class getServicersCustomer(Resource):
+    def get(self, sCat_id):
+        s=Servicer.query.filter_by(sCat_id=sCat_id).all()
         l=[]
         for cat in s:    
             l.append(cat.convert_to_json())
@@ -117,6 +134,50 @@ class toggleServicerAdmin(Resource):
                 db.session.commit()
                 return {"message":"Servicer Aproved successfully!"}, 200
             
+class updateCustomerRequest(Resource):
+    @jwt_required()
+    def put(self):
+        data = request.json
+        cust_id = get_jwt_identity()
+        s1 = data.get("serReq_id")
+        s2 = ServiceRequest.query.filter_by(serReq_id=s1, cust_id=cust_id).first()
+        if s2:
+            x=data.get("service_date")
+            s2.service_date = datetime(int(x[0:4]),int(x[5:7]),int(x[8:19]))
+            db.session.commit()
+            return {"message":"Service date updated successfully"}, 200
+        else:
+            return {"message":"Service request not found!"}, 404
+class customerSearch(Resource):
+    @jwt_required()
+    def post(self):
+        data = request.json
+        print(data)
+        x1=data.get("searchQuery")
+        x2 = data.get("searchBy")
+        if x2 == "service_description":
+            s=Service.query.filter_by(service_Description=x1).all()
+            l=[]
+            for cat in s:    
+                l.append(cat.convert_to_json())
+            return {"data":l, "stat":1}, 200
+        elif x2 == "price":
+            s=Service.query.filter_by(price=int(x1)).all()
+            l=[]
+            for cat in s:    
+                l.append(cat.convert_to_json())
+            return {"data":l,"stat":1}, 200
+        elif x2 == "category":
+            s=(ServiceCategory.query.filter_by(ser_desc=x1).first())
+            s1=s.sCat_id
+            print(s1)
+            s_main = Service.query.filter_by(sCat_id=s1).all()
+            l=[]
+            for cat in s_main:    
+                l.append(cat.convert_to_json())
+            return {"data":l, "stat":1}, 200
+        else:
+            return {"message":"Something went wrong", "stat":0}, 400
 
 class adminLogin(Resource):
     def get(self):
@@ -155,7 +216,58 @@ class adminNewService(Resource):
         db.session.add(s)
         db.session.commit()
         return {"message":"service added successfully", "status":1}, 200
-    
+
+class customerServiceRequest(Resource):
+    @jwt_required()
+    def post(self):
+        s1=ServiceRequest.query.all()
+        data=request.json
+        cust_id = get_jwt_identity()
+        print(data, cust_id)
+        sr1=data.get("service_ID")
+        sr2=datetime.now()
+        sr3=data.get('service_date')
+        new=datetime(int(sr3[0:4]),int(sr3[5:7]),int(sr3[8:]))
+        sr4=cust_id
+        sr5="REQUESTED"
+        sr6=data.get('servicer_ID')
+        sr7 = CustomerDetails.query.filter_by(cust_id=cust_id).first().name
+        sr8 = Servicer.query.filter_by(servicer_ID=sr6).first().firstname
+        
+        if not s1:
+            sr0 = 1
+        else:
+            s2=s1[-1]
+            s2=s2.convert_to_json()
+            sr0=int(s2['serReq_id'])+1
+        s=ServiceRequest(serReq_id=sr0, service_id=sr1, created_date=sr2, service_date=new, cust_id=sr4, status=sr5, servicer_id=sr6, custname=sr7, servicername=sr8, completed_date=new)
+        db.session.add(s)
+        db.session.commit()
+        return {"message":"service request added successfully", "status":1}, 200
+#         "serReq_id" VARCHAR(40) NOT NULL,
+#   service_id INTEGER NOT NULL,
+#   created_date DATETIME,
+#   service_date DATETIME,
+#   completed_date DATETIME,
+#   cust_id VARCHAR(40) NOT NULL,
+#   status VARCHAR(10),
+#   servicer_id VARCHAR(40) NOT NULL,
+#   custname VARCHAR(40),
+#   servicername VARCHAR(40),
+#   PRIMARY KEY ("serReq_id"),
+
+class deleteCustomerRequest(Resource):
+    @jwt_required()
+    def put(self, serReq_id):
+        s=ServiceRequest.query.filter_by(serReq_id=serReq_id).first()
+        if s:
+            db.session.delete(s)
+            db.session.commit()
+            return {"message":"service request deleted successfully", "status":1}, 200
+        else:
+            return {"message":"service request not found", "status":0}, 404
+
+
 class adminEditService(Resource):
     @jwt_required()
     def put(self, service_id):
@@ -220,6 +332,18 @@ class adminSummary(Resource):
         c_1=CustomerDetails.query.filter_by(flags=1).all()
         blockedCust, activeCust = len(c_1), totalCustomers-len(c_1)
         return {"data_1":[totalServices, totalCustomers, totalServiceRequests, totalServicers], "data_2":[blockedCust, activeCust]}, 200
+
+
+class getCustomerDetails(Resource):
+    @jwt_required()
+    def get(self):
+        cust_id = get_jwt_identity()
+        print(cust_id)
+        s=CustomerDetails.query.filter_by(cust_id=cust_id).first()
+        l=s.convert_to_json()
+        print([l])
+        return {"message":"Customer details", "data":[l]}, 200
+
 class customerLogin(Resource):
     def post(self):
         data = request.get_json()

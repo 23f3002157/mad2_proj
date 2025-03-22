@@ -2,7 +2,7 @@
   <div class="container">
     <div class="d-flex flex-column align-items-center">
       <h1 class="text-center mb-4">Servicer Details</h1>
-      <h2>Approved Activer Servicers</h2>
+      <h2>Approved Active Servicers</h2>
       <table class="table table-striped">
         <thead>
           <tr>
@@ -11,10 +11,12 @@
             <th>Address</th>
             <th>City</th>
             <th>State</th>
-            <th>Flags</th>
             <th>Rating</th>
             <th>Status</th>
             <th>Experience</th>
+            <th>Photograph</th>
+            <th>Document</th>
+            <th>Action</th>
           </tr>
         </thead>
         <tbody>
@@ -24,11 +26,12 @@
               <td v-if="servicer.flag != 1 && servicer.status != 0">{{ servicer.address }}</td>
               <td v-if="servicer.flag != 1 && servicer.status != 0">{{ servicer.city }}</td>
               <td v-if="servicer.flag != 1 && servicer.status != 0">{{ servicer.state }}</td>
-              <td v-if="servicer.flag != 1 && servicer.status != 0">{{ servicer.flag }}</td>
               <td v-if="servicer.flag != 1 && servicer.status != 0">{{ servicer.rating }}</td>
               <td v-if="servicer.flag != 1 && servicer.status != 0">{{ servicer.status }}</td>
               <td v-if="servicer.flag != 1 && servicer.status != 0">{{ servicer.experience }}</td>
-            <td v-if="servicer.flag != 1 && servicer.status != 0"><button class="btn btn-danger" @click="toggleServicer(servicer.servicer_ID)">Block</button></td>
+              <td v-if="servicer.flag != 1 && servicer.status != 0"><a ref="link" target="_blank" :href="servicer.servicer_photo"><button class="btn btn-warning">View Photo</button></a></td>
+              <td v-if="servicer.flag != 1 && servicer.status != 0"><a ref="link" target="_blank" :href="servicer.document_verify"><button class="btn btn-warning">Document</button></a></td>
+              <td v-if="servicer.flag != 1 && servicer.status != 0"><button class="btn btn-danger" @click="toggleServicer(servicer.servicer_ID)">Block</button></td>
           </tr>
         </tbody>
       </table>
@@ -41,10 +44,10 @@
             <th>Address</th>
             <th>City</th>
             <th>State</th>
-            <th>Flags</th>
-            <th>Rating</th>
-            <th>Status</th>
             <th>Experience</th>
+            <th>Photograph</th>
+            <th>Document</th>
+            <th>Action</th>
           </tr>
         </thead>
         <tbody>
@@ -54,11 +57,12 @@
               <td v-if="servicer.status != 1">{{ servicer.address }}</td>
               <td v-if="servicer.status != 1">{{ servicer.city }}</td>
               <td v-if="servicer.status != 1">{{ servicer.state }}</td>
-              <td v-if="servicer.status != 1">{{ servicer.flag }}</td>
-              <td v-if="servicer.status != 1">{{ servicer.rating }}</td>
-              <td v-if="servicer.status != 1">{{ servicer.status }}</td>
               <td v-if="servicer.status != 1">{{ servicer.experience }}</td>
-            <td v-if="servicer.status != 1"><button class="btn btn-success" @click="approveServicer(servicer.servicer_ID)">Approve</button></td>
+              <td v-if="servicer.status != 1"><a ref="link" target="_blank" :href="servicer.servicer_photo"><button class="btn btn-warning">View Photo</button></a></td>
+              <td v-if="servicer.status != 1"><a ref="link" target="_blank" :href="servicer.document_verify"><button class="btn btn-warning">Document</button></a></td>
+            <td v-if="servicer.status != 1"><button class="btn btn-success" @click="approveServicer(servicer.servicer_ID)">Approve</button>
+              <button class="btn btn-danger" @click="approveServicer(servicer.servicer_ID)">Reject</button>
+            </td>
 
             <!-- firstname VARCHAR(40) NOT NULL,
   lastname VARCHAR(40) NOT NULL,

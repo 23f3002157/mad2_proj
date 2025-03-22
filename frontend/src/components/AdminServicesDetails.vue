@@ -20,7 +20,7 @@
             <td>{{ service.service_ID }}</td>
             <td>{{ service.service_description }}</td>
             <td>{{ service.price }}</td>
-            <td>{{ service.sCat_id }}</td>
+            <td>{{ service.ser_desc }}</td>
             <td>{{ service.created_date }}</td>
             <td>
               <button class="btn btn-primary" @click="openEditModal(service)">EDIT</button>
@@ -51,7 +51,11 @@
                 </div>
                 <div class="mb-3">
                   <label class="form-label">Category</label>
-                  <input type="text" v-model="selectedService.sCat_id" class="form-control" required>
+                  <select class="form-select" v-model="selectedService.sCat_id" required>
+                    <option value="cat_1">Plumbing</option>
+                    <option value="cat_2">Carpentry</option>
+                    <option value="cat_3">Electricals</option>
+                  </select>
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

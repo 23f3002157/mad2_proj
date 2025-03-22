@@ -38,10 +38,10 @@
                 <h5 class="card-title">{{ searchResults.firstname }} {{ searchResults.lastname }}</h5>
                 <p class="card-text">Email: {{ searchResults.email }}</p>
                 <p class="card-text">Address: {{ searchResults.address }}, {{ searchResults.city }}, {{ searchResults.state }}</p>
-                <p class="card-text">Status: {{ searchResults.status }}</p>
-                <p class="card-text">Flags: {{ searchResults.flag }}</p>
+                <p class="card-text">Approved Status: <span v-if="searchResults.status === 1">YES</span><span v-else>NO</span></p>
+                <p class="card-text">Block (Yes/No): <span v-if="searchResults.flag === 1">YES</span><span v-else>NO</span></p>
                 <p class="card-text">Modified Date: {{ searchResults.modified_date }}</p>
-                <a ref="link" target="_blank"><button @click="$refs.link.href = searchResults.document_verify" class="btn btn-success">View Documents</button></a>
+                <a ref="link" target="_blank" :href="searchResults.document_verify"><button @click="$refs.link.href = searchResults.document_verify" class="btn btn-success">View Documents</button></a>
                 <a ref="link" target="_blank"><button @click="$refs.link.href = searchResults.servicer_photo" class="btn btn-warning">View Photograph</button></a>
                 <button @click="toggleServicer(searchResults.servicer_ID)" class="btn btn-primary">Block/Unblock</button>
               </div>

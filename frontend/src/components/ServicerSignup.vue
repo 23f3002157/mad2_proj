@@ -26,7 +26,7 @@
           </div>
           <div class="form-group mb-3">
             <label for="experience" class="form-label">Experience</label>
-            <input type="text" class="form-control" id="experience" v-model="experience" placeholder="Enter experience" required>
+            <input type="number" class="form-control" id="experience" v-model="experience" placeholder="Enter experience" required>
           </div>
           <div class="form-group mb-3">
             <label for="city" class="form-label">City</label>

@@ -19,18 +19,18 @@
           <thead>
             <tr>
               <th>serReq_id</th>
-              <th>service_id</th>
-              <th>service_date</th>
-              <th>status</th>
-              <th>servicername</th>
+              <th>Service Name</th>
+              <th>Service Date</th>
+              <th>Service Status</th>
+              <th>Servicer Name</th>
               <th>ACTIONS</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="order in serReqDetails" :key="order.serReq_id">
               <td>{{ order.serReq_id }}</td>
-              <td>{{ order.service_id }}</td>
-              <td>{{ order.service_date }}</td>
+              <td>{{ order.service_Description }}</td>
+              <td>{{ order.service_date.slice(0, 10) }}</td>
               <td>{{ order.status }}</td>
               <td>{{ order.servicername }}</td>
               <td><button class="btn btn-primary" v-if="order.status === 'REQUESTED'" @click="openEditModal_1(order)">EDIT</button>
@@ -227,7 +227,7 @@ export default {
           }).then(response => response.json())
           alert("Updated successfully");
           this.getServiceRequests();
-          this.editModal.hide();
+          this.editModal_2.hide();
       },
       async closeService(){
         const response = await fetch("http://127.0.0.1:5000/servicerDashboard/closeServiceCutomer",{

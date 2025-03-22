@@ -34,8 +34,11 @@ class getServiceRequest(Resource):
         cust_id = get_jwt_identity()
         s=ServiceRequest.query.filter_by(cust_id=cust_id).all()
         l=[]
-        for cat in s:    
-            l.append(cat.convert_to_json())
+        for cat in s:
+            s2 = Service.query.filter_by(service_ID=cat.service_id).first()
+            d=cat.convert_to_json()
+            d["service_Description"] = s2.service_Description   
+            l.append(d)
         return l, 200
 class getServices(Resource):
     def get(self):
@@ -46,11 +49,15 @@ class getServices(Resource):
         return l, 200
     
 class getServicesAdmin(Resource):
+    @cache.cached(timeout=10)
     def get(self):
         s=Service.query.all()
         l=[]
-        for cat in s:    
-            l.append(cat.convert_to_json())
+        for cat in s:
+            s2=ServiceCategory.query.filter_by(sCat_id=cat.sCat_id).first()
+            d=cat.convert_to_json()
+            d["ser_desc"]=s2.ser_desc    
+            l.append(d)
         return l, 200
 
 class getServicersCustomer(Resource):
@@ -339,15 +346,23 @@ class adminSearch(Resource):
 class adminSummary(Resource):
     @jwt_required()
     def get(self):
-        s=Service.query.all()
         c=CustomerDetails.query.all()
         s1=ServiceRequest.query.all()
-        s2=Servicer.query.all()
-        totalServices, totalCustomers, totalServiceRequests, totalServicers = len(s), len(c), len(s1), len(s2)
-
+        totalCustomers=len(c)
+        requested, rejected, accepted, completed = 0,0,0,0
+        s1=ServiceRequest.query.all()
+        for i in s1:
+            if i.status=="REQUESTED":
+                requested+=1
+            elif i.status=="REJECTED":
+                rejected+=1
+            elif i.status=="ACCEPTED":
+                accepted+=1
+            elif i.status=="COMPLETED":
+                completed+=1
         c_1=CustomerDetails.query.filter_by(flags=1).all()
         blockedCust, activeCust = len(c_1), totalCustomers-len(c_1)
-        return {"data_1":[totalServices, totalCustomers, totalServiceRequests, totalServicers], "data_2":[blockedCust, activeCust]}, 200
+        return {"data_1":[requested, rejected, accepted, completed], "data_2":[blockedCust, activeCust]}, 200
 
 
 class getCustomerDetails(Resource):
@@ -494,8 +509,11 @@ class closeServiceCutomer(Resource):
 #   comments VARCHAR(100),
         f=Feedback(fid=random.randint(10000,99999),serReq_id=x,ratings=int(data.get("rating")), comments=data.get("comment"))
         s1=Servicer.query.filter_by(servicer_ID=data.get("servicer_id")).first()
-        x=s1.rating+int(data.get("rating"))//2
-        s1.rating=x
+        if s1.rating==0:
+            s1.rating=int(data.get("rating"))
+        else:
+            x=(s1.rating+int(data.get("rating")))/2
+            s1.rating=x
         db.session.add(f)
         db.session.commit()
         return {"message":"Service request completed successfully", "status":1}, 200

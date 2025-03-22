@@ -36,14 +36,14 @@ def get_html_report(data, name, filename):
 
 @celery.on_after_configure.connect
 def setup_periodic_tasks(sender, **kwargs):
-    sender.add_periodic_task(30.0, monthly_reminder.s(), name='add every 30')
+    #sender.add_periodic_task(30.0, daily_remainder.s(), name='add every 30')
     sender.add_periodic_task(
-        crontab(hour=21, minute=12),
+        crontab(hour=1, minute=11),
         daily_remainder.s(),
         name="Daily Remainder at 6:30 PM"
     )
     sender.add_periodic_task(
-        crontab(hour=21, minute=30),
+        crontab(hour=1, minute=16, day_of_month='23'),
         monthly_reminder.s(),
         name="Monthly Customer Reminder"
     )

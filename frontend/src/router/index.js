@@ -19,6 +19,7 @@ import CustomerNewService from '@/components/CustomerNewService.vue'
 import CustomerSearch from '@/components/CustomerSearch.vue'
 import CustomerSummary from '@/components/CustomerSummary.vue'
 import ServicerDashboard from '@/components/ServicerDashboard.vue'
+import CustomerSearchServicer from '@/components/CustomerSearchServicer.vue'
 // import HomeView from '../views/HomeView.vue'
 
 const router = createRouter({
@@ -98,6 +99,11 @@ const router = createRouter({
       path: '/customerDashboard/search',
       name: 'customer-dashboard-search',
       component: CustomerSearch
+    },
+    {
+      path: '/customerDashboard/search_2',
+      name: 'customer-dashboard-search_2',
+      component: CustomerSearchServicer
     },
     {
       path: '/customerDashboard/summary',

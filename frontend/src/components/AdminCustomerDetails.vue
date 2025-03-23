@@ -12,7 +12,6 @@
             <th>City</th>
             <th>Postcode</th>
             <th>Flags</th>
-            <th>Rating</th>
             <th>Block</th>
           </tr>
         </thead>
@@ -24,7 +23,6 @@
               <td v-if="customer.flag != 1">{{ customer.city }}</td>
               <td v-if="customer.flag != 1">{{ customer.postcode }}</td>
               <td v-if="customer.flag != 1">{{ customer.flag }}</td>
-              <td v-if="customer.flag != 1">{{ customer.rating }}</td>
             <td v-if="customer.flag != 1"><button class="btn btn-danger" @click="blockCustomer(customer.cust_id)">Block</button></td>
 
           </tr>
@@ -42,7 +40,6 @@
             <th>City</th>
             <th>Postcode</th>
             <th>Flags</th>
-            <th>Rating</th>
             <th>Block</th>
           </tr>
         </thead>
@@ -54,7 +51,6 @@
               <td v-if="customer.flag != 0">{{ customer.city }}</td>
               <td v-if="customer.flag != 0">{{ customer.postcode }}</td>
               <td v-if="customer.flag != 0">{{ customer.flag }}</td>
-              <td v-if="customer.flag != 0">{{ customer.rating }}</td>
               <td v-if="customer.flag != 0"><button class="btn btn-success" @click="unblockCustomer(customer.cust_id)">Unblock</button></td>
           </tr>
         </tbody>

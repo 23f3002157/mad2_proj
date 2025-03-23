@@ -8,7 +8,7 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from .models import db, CustomerDetails, Service, ServiceCategory, Servicer, ServiceRequest, Feedback
 
-def send_mail(email,email_content):
+def send_mail(email,email_content,subject):
     smtp_server_host = "localhost"
     smtp_port = 1025
     sender_email = "admin@gmail.com"
@@ -20,7 +20,7 @@ def send_mail(email,email_content):
     msg = MIMEMultipart()
     msg["From"] = sender_email
     msg["To"] = email
-    msg["Subject"] = "Remainders - Pending Service Requests"
+    msg["Subject"] = subject
 
     # Attach the HTML content to the email
     msg.attach(MIMEText(email_content, "html"))
@@ -36,14 +36,14 @@ def get_html_report(data, name, filename):
 
 @celery.on_after_configure.connect
 def setup_periodic_tasks(sender, **kwargs):
-    #sender.add_periodic_task(30.0, daily_remainder.s(), name='add every 30')
+    sender.add_periodic_task(30.0, monthly_reminder.s(), name='add every 30')
     sender.add_periodic_task(
         crontab(hour=1, minute=11),
         daily_remainder.s(),
         name="Daily Remainder at 6:30 PM"
     )
     sender.add_periodic_task(
-        crontab(hour=1, minute=16, day_of_month='23'),
+        crontab(hour=1, minute=16, day_of_month='23', month_of_year='*'),
         monthly_reminder.s(),
         name="Monthly Customer Reminder"
     )
@@ -68,7 +68,7 @@ def daily_remainder():
                     pendingRequests.append(d)
             
             report = get_html_report(pendingRequests, curr.firstname+" "+curr.lastname, "report")
-            send_mail(curr.email, report)
+            send_mail(curr.email, report,"Remainders - Pending Service Requests")
 
 
 @celery.task
@@ -86,4 +86,7 @@ def monthly_reminder():
                 d['service_Description'] = x
                 service_requests.append(d)
             report = get_html_report(service_requests, cust.name, "cust_report")
-            send_mail(cust.email, report)
+            send_mail(cust.email, report, "Monthly Report")
+        else:
+            report = get_html_report("No service requests made", cust.name, "no_requests")
+            send_mail(cust.email, report, "Monthly Report")

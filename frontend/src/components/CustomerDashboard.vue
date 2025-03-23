@@ -8,7 +8,8 @@
     <div class="row justify-content-center mt-4 mb-5">
       <div class="col-auto">
         <router-link to="/customerDashboard/new_service" class="btn btn-secondary mx-2">Create new Service</router-link>
-        <router-link to="/customerDashboard/search" class="btn btn-success mx-2">Search</router-link>
+        <router-link to="/customerDashboard/search" class="btn btn-success mx-2">Search Services</router-link>
+        <router-link to="/customerDashboard/search_2" class="btn btn-warning mx-2">Search Service Professionals</router-link>
         <router-link to="/customerDashboard/summary" class="btn btn-info mx-2">Summary</router-link>
       </div>
     </div>

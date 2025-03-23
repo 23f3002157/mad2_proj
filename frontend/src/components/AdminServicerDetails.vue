@@ -61,7 +61,7 @@
               <td v-if="servicer.status != 1"><a ref="link" target="_blank" :href="servicer.servicer_photo"><button class="btn btn-warning">View Photo</button></a></td>
               <td v-if="servicer.status != 1"><a ref="link" target="_blank" :href="servicer.document_verify"><button class="btn btn-warning">Document</button></a></td>
             <td v-if="servicer.status != 1"><button class="btn btn-success" @click="approveServicer(servicer.servicer_ID)">Approve</button>
-              <button class="btn btn-danger" @click="approveServicer(servicer.servicer_ID)">Reject</button>
+              <button class="btn btn-danger" @click="rejectServicer(servicer.servicer_ID)">Reject</button>
             </td>
 
             <!-- firstname VARCHAR(40) NOT NULL,
@@ -169,6 +169,17 @@ export default {
     async approveServicer(servicer_id) {
             const response = await fetch(`http://127.0.0.1:5000/adminDashboard/servicerToggle/${servicer_id}`, {
                 method:"PATCH",
+                headers:{
+                    'Content-Type': 'application/json',
+                    "Authorization": `Bearer ${localStorage.getItem("adminAuthToken")}`
+                }
+            }).then(response => response.json())
+                alert(response.message);
+                this.getServicers();
+    },
+    async rejectServicer(servicer_id){
+      const response = await fetch(`http://127.0.0.1:5000/adminDashboard/servicerToggle/${servicer_id}`, {
+                method:"DELETE",
                 headers:{
                     'Content-Type': 'application/json',
                     "Authorization": `Bearer ${localStorage.getItem("adminAuthToken")}`

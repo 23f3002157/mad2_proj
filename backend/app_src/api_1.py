@@ -49,7 +49,6 @@ class getServices(Resource):
         return l, 200
     
 class getServicesAdmin(Resource):
-    @cache.cached(timeout=10)
     def get(self):
         s=Service.query.all()
         l=[]
@@ -130,6 +129,15 @@ class toggleServicerAdmin(Resource):
             return {"message":f"Servicer toggled successfully!"}, 200
         else:
             return {"message":"Servicer not found!"}, 404
+    @jwt_required()
+    def delete(self, servicer_id):
+        servicer = Servicer.query.get(servicer_id)
+        if servicer:
+            db.session.delete(servicer)
+            db.session.commit()
+            return {"message":"Servicer deleted successfully!"}, 200
+        else:
+            return {"message":"Servicer not found!"}, 404
         
     @jwt_required()
     def patch(self, servicer_id):
@@ -183,6 +191,41 @@ class customerSearch(Resource):
             l=[]
             for cat in s_main:    
                 l.append(cat.convert_to_json())
+            return {"data":l, "stat":1}, 200
+        else:
+            return {"message":"Something went wrong", "stat":0}, 400
+    
+    @jwt_required()
+    def put(self):
+        cust_id = get_jwt_identity()
+        data = request.json
+        if data.get("searchBy")=="firstname":
+            s=Servicer.query.filter_by(firstname=data.get("searchQuery"), status=1, flag=0).all()
+            l=[]
+            for cat in s:
+                s2=ServiceCategory.query.filter_by(sCat_id=cat.sCat_id).first()
+                d=cat.convert_to_json()
+                d['ser_desc']=s2.ser_desc
+                l.append(d)
+            return {"data":l, "stat":1}, 200
+        elif data.get("searchBy")=="city":
+            s=Servicer.query.filter_by(city=data.get("searchQuery"), status=1, flag=0).all()
+            l=[]
+            for cat in s:
+                s2=ServiceCategory.query.filter_by(sCat_id=cat.sCat_id).first()
+                d=cat.convert_to_json()
+                d['ser_desc']=s2.ser_desc
+                l.append(d)
+            return {"data":l, "stat":1}, 200
+        elif data.get("searchBy")=="category":
+            s2=ServiceCategory.query.filter_by(ser_desc=data.get("searchQuery")).first()
+            x,y=s2.sCat_id, s2.ser_desc
+            s=Servicer.query.filter_by(sCat_id=x, status=1, flag=0).all()
+            l=[]
+            for cat in s:
+                d=cat.convert_to_json()
+                d['ser_desc']=y
+                l.append(d)
             return {"data":l, "stat":1}, 200
         else:
             return {"message":"Something went wrong", "stat":0}, 400
@@ -331,17 +374,36 @@ class adminSearch(Resource):
     def post(self):
         data = request.json
         print(data)
-        if(data.get("searchBy")=="customer"):
-            s=CustomerDetails.query.filter_by(name=data.get("searchQuery")).first()
-            if s:
-                return {"message":"customer found", "data":s.convert_to_json(), "stat":1}, 200
-            else:
-                 return {"message":"not found", "stat":0}, 400
-        elif(data.get("searchBy")=="servicer"):
-            s=Servicer.query.filter_by(firstname=data.get("searchQuery")).first()
-            if s:
-                return {"message":"servicer found", "data":s.convert_to_json(), "stat":1}, 200
-            return {"message":"servicer not found","stat":0}, 400
+        if data.get("searchBy")=="firstname":
+            s=Servicer.query.filter_by(firstname=data.get("searchQuery")).all()
+            l=[]
+            for cat in s:
+                s2=ServiceCategory.query.filter_by(sCat_id=cat.sCat_id).first()
+                d=cat.convert_to_json()
+                d['ser_desc']=s2.ser_desc
+                l.append(d)
+            return {"data":l, "stat":1}, 200
+        elif data.get("searchBy")=="city":
+            s=Servicer.query.filter_by(city=data.get("searchQuery")).all()
+            l=[]
+            for cat in s:
+                s2=ServiceCategory.query.filter_by(sCat_id=cat.sCat_id).first()
+                d=cat.convert_to_json()
+                d['ser_desc']=s2.ser_desc
+                l.append(d)
+            return {"data":l, "stat":1}, 200
+        elif data.get("searchBy")=="category":
+            s2=ServiceCategory.query.filter_by(ser_desc=data.get("searchQuery")).first()
+            x,y=s2.sCat_id, s2.ser_desc
+            s=Servicer.query.filter_by(sCat_id=x).all()
+            l=[]
+            for cat in s:
+                d=cat.convert_to_json()
+                d['ser_desc']=y
+                l.append(d)
+            return {"data":l, "stat":1}, 200
+        else:
+            return {"message":"Something went wrong", "stat":0}, 400
 
 class adminSummary(Resource):
     @jwt_required()

@@ -11,43 +11,51 @@
       <div class="input-group mb-3 input-group-sm" style="width: 400px;">
         <label>Search By:</label>
         <select class="form-control" v-model="searchBy">
-          <option value="customer">Customer</option>
-          <option value="servicer">Servicer</option>
+          <option value="firstname">Firstname</option>
+          <option value="city">City</option>
+          <option value="category">Category</option>
         </select>
         </div>
     </form>
   </div>
     <div v-if="stat === 1">
-      <div v-if="searchBy === 'customer'">
-        <div class="card mb-3">
-          <div class="card-header">Customer Results</div>
-          <div class="card-body">
-            <ul class="list-group">
-              <li class="list-group-item" v-for="customer in searchResults" :key="customer.cust_id">
-                {{ customer.name }} ({{ customer.email }})
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-      <div v-if="searchBy === 'servicer'" style="display: flex; justify-content: center;">
-        <div class="card mb-3" style="max-width: 840px;">
-          <div class="row g-0">
-            <div class="col-md-8">
+      <div v-if="stat === 1">
+        <div class="row row-cols-1 row-cols-md-3 g-4" v-if="searchResults.length">
+          <div v-for="result in searchResults" :key="result.service_ID" class="col">
+            <div class="card">
               <div class="card-body">
-                <h5 class="card-title">{{ searchResults.firstname }} {{ searchResults.lastname }}</h5>
-                <p class="card-text">Email: {{ searchResults.email }}</p>
-                <p class="card-text">Address: {{ searchResults.address }}, {{ searchResults.city }}, {{ searchResults.state }}</p>
-                <p class="card-text">Approved Status: <span v-if="searchResults.status === 1">YES</span><span v-else>NO</span></p>
-                <p class="card-text">Block (Yes/No): <span v-if="searchResults.flag === 1">YES</span><span v-else>NO</span></p>
-                <p class="card-text">Modified Date: {{ searchResults.modified_date }}</p>
-                <a ref="link" target="_blank" :href="searchResults.document_verify"><button @click="$refs.link.href = searchResults.document_verify" class="btn btn-success">View Documents</button></a>
-                <a ref="link" target="_blank"><button @click="$refs.link.href = searchResults.servicer_photo" class="btn btn-warning">View Photograph</button></a>
-                <button @click="toggleServicer(searchResults.servicer_ID)" class="btn btn-primary">Block/Unblock</button>
+                <h5 class="card-title">{{ result.firstname }}  {{ result.lastname }}</h5>
+                <p class="card-text">Email ID: {{ result.email }}</p>
+                <p class="card-text">City: {{ result.city }}</p>
+                <p class="card-text">State: {{ result.state }}</p>
+                <p class="card-text">Experience: {{ result.experience }}</p>
+                <p class="card-text">Rating: {{ result.rating }}</p>
+                <p class="card-text">Approved Status: <span v-if="result.status === 1" class="text-success">Approved</span><span v-else class="text-danger">Pending</span></p>
+                <p class="card-text">Blocked Status: <span v-if="result.flag === 0" class="text-success">NO</span><span v-else class="text-danger">YES</span></p>
+                <p class="card-text"><a ref="link" target="_blank" :href="result.servicer_photo"><button class="btn btn-success">View Photo</button></a></p>
+                <p class="card-text"><a ref="link" target="_blank" :href="result.document_verify"><button class="btn btn-warning">View Document</button></a></p>
+                <p class="card-text"><button class="btn btn-danger" @click="toggleServicer(result.servicer_ID)">Block/Unblock</button></p>
+                <!-- "servicer_ID" VARCHAR(40) NOT NULL,
+  firstname VARCHAR(40) NOT NULL,
+  lastname VARCHAR(40) NOT NULL,
+  email VARCHAR(30) NOT NULL,
+  pass_ VARCHAR(20) NOT NULL,
+  address VARCHAR(150) NOT NULL,
+  city VARCHAR(40) NOT NULL,
+  state VARCHAR(40) NOT NULL,
+  created_date DATETIME NOT NULL,
+  modified_date DATETIME NOT NULL,
+  "sCat_id" VARCHAR(40) NOT NULL,
+  flag INTEGER,
+  status INTEGER,
+  experience INTEGER,
+  rating FLOAT,
+  servicer_photo VARCHAR(200),
+  document_verify VARCHAR(200), -->
               </div>
             </div>
           </div>
-        </div>
+        </div>        
       </div>
     </div>
     <div v-if="stat === 0">

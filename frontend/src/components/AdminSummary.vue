@@ -36,6 +36,35 @@
       </div>
     </div>
   </div>
+<br><br>
+  <div class="row">
+      <div class="col-12">
+        <h2 class="text-center mb-4">All Orders</h2>
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>serReq_id</th>
+              <th>Service Name</th>
+              <th>Service Date</th>
+              <th>Service Status</th>
+              <th>Servicer Name</th>
+              <th>Customer Name</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="order in serReqDetails" :key="order.serReq_id">
+              <td>{{ order.serReq_id }}</td>
+              <td>{{ order.service_Description }}</td>
+              <td>{{ order.service_date.slice(0, 10) }}</td>
+              <td>{{ order.status }}</td>
+              <td>{{ order.servicername }}</td>
+              <td>{{ order.custname }}</td>
+  
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
 </template>
 
 <script>
@@ -77,6 +106,7 @@ export default {
       totalUsers: 0,
       totalServicers: 0,
       totalCustomers: 0,
+      serReqDetails:[]
     }
   },
   methods: {
@@ -107,6 +137,18 @@ export default {
       this.totalServicers = response.data_1[0]+response.data_1[1]+response.data_1[2]+response.data_1[3]
       this.totalUsers = response.data_3[0]+response.data_3[1]
       this.l = true
+      this.getRequests();
+    },
+    async getRequests(){
+      const response = await fetch("http://127.0.0.1:5000//getServiceRequest",{
+        method:"GET",
+        headers:{
+          'Content-Type': 'application/json',
+          "Authorization": `Bearer ${localStorage.getItem("adminAuthToken")}`
+        }
+      }).then(response => response.json())
+      this.serReqDetails = response.data;
+      console.log(response)
     }
   },
   mounted() {

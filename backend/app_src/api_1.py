@@ -32,7 +32,17 @@ class homePageAPI(Resource):
 class getServiceRequest(Resource):
     @jwt_required()
     def get(self):
-        cust_id = get_jwt_identity()
+        r=get_jwt_identity()
+        if r=="admin@1234":
+            s1=ServiceRequest.query.all()
+            l=[]
+            for req in s1:
+                d=req.convert_to_json()
+                s2=Service.query.filter_by(service_ID=req.service_id).first()
+                d["service_Description"]=s2.service_Description
+                l.append(d)
+            return {"data":l, "stat":1}, 200
+        cust_id = r
         s=ServiceRequest.query.filter_by(cust_id=cust_id).all()
         l=[]
         for cat in s:
@@ -546,7 +556,8 @@ class servicerLogin(Resource):
 class getServiceRequestsServicer(Resource):
     @jwt_required()
     def get(self):
-        servicer_id=get_jwt_identity()
+        r=get_jwt_identity()
+        servicer_id=r
         print(servicer_id)
         s1=ServiceRequest.query.filter_by(servicer_id=servicer_id).all()
         l=[]

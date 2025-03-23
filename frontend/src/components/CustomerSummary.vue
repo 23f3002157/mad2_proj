@@ -91,9 +91,9 @@
                   backgroundColor: [ 'rgba(255, 99, 132, 0.7)',  'rgba(54, 162, 235, 0.7)' ]
                } ]
           }
-          this.totalRequests=response.data_1[0]
-          this.totalPending=response.data_1[1]
-          this.totalCompleted=response.data_1[2]
+          this.totalRequests=response.data_1[2]
+          this.totalPending=response.data_1[0]
+          this.totalCompleted=response.data_1[1]
           this.l=true
       }
     },

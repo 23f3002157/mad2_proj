@@ -5,7 +5,8 @@ from flask_jwt_extended import jwt_required, create_access_token, get_jwt_identi
 from .models import db, CustomerDetails, Service, ServiceCategory, Servicer, ServiceRequest, Feedback
 import random, time
 from flask_caching import Cache
-
+from .task import admin_asyncReport
+from flask import send_file, jsonify
 
 cache = Cache()
 
@@ -174,14 +175,20 @@ class customerSearch(Resource):
         if x2 == "service_description":
             s=Service.query.filter_by(service_Description=x1).all()
             l=[]
-            for cat in s:    
-                l.append(cat.convert_to_json())
+            for cat in s:
+                s2=ServiceCategory.query.filter_by(sCat_id=cat.sCat_id).first()
+                d=cat.convert_to_json()
+                d["ser_desc"]=s2.ser_desc
+                l.append(d)
             return {"data":l, "stat":1}, 200
         elif x2 == "price":
             s=Service.query.filter_by(price=int(x1)).all()
             l=[]
             for cat in s:    
-                l.append(cat.convert_to_json())
+                s2=ServiceCategory.query.filter_by(sCat_id=cat.sCat_id).first()
+                d=cat.convert_to_json()
+                d["ser_desc"]=s2.ser_desc
+                l.append(d)
             return {"data":l,"stat":1}, 200
         elif x2 == "category":
             s=(ServiceCategory.query.filter_by(ser_desc=x1).first())
@@ -189,8 +196,10 @@ class customerSearch(Resource):
             print(s1)
             s_main = Service.query.filter_by(sCat_id=s1).all()
             l=[]
-            for cat in s_main:    
-                l.append(cat.convert_to_json())
+            for cat in s_main:
+                d=cat.convert_to_json()
+                d['ser_desc']=s.ser_desc
+                l.append(d)
             return {"data":l, "stat":1}, 200
         else:
             return {"message":"Something went wrong", "stat":0}, 400
@@ -580,3 +589,19 @@ class closeServiceCutomer(Resource):
         db.session.commit()
         return {"message":"Service request completed successfully", "status":1}, 200
     
+class adminExportReport(Resource):
+    @jwt_required()
+    def get(self):
+        if get_jwt_identity()!="admin@1234":
+            return {"message":"Unauthorized access"}, 401
+        else:
+            s=ServiceRequest.query.all()
+            l=[]
+            for req in s:
+                d=req.convert_to_json()
+                s=Service.query.filter_by(service_ID=req.service_id).first()
+                d['serv_desc']=s.service_Description
+                d['price']=s.price
+                l.append(d)
+            admin_asyncReport(l, "admin@gmail.com")
+            return send_file("dataExport.csv", as_attachment=True, download_name="dataExport.csv", mimetype="text/csv")

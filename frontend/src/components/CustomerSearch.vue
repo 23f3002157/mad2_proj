@@ -25,7 +25,7 @@
               <div class="card-body">
                 <h5 class="card-title">{{ result.service_description }}</h5>
                 <p class="card-text">Price: {{ result.price }}</p>
-                <p class="card-text">Category: {{ result.sCat_id }}</p>
+                <p class="card-text">Category: {{ result.ser_desc }}</p>
                 <p class="card-text">Created Date: {{ result.created_date }}</p>
               </div>
             </div>

@@ -3,12 +3,14 @@ from celery.schedules import crontab
 from .worker import celery
 from .models import *
 from jinja2 import Template
-import smtplib
+import smtplib, csv
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from email.mime.base import MIMEBase
+from email import encoders
 from .models import db, CustomerDetails, Service, ServiceCategory, Servicer, ServiceRequest, Feedback
 
-def send_mail(email,email_content,subject):
+def send_mail(email,email_content,subject, a=None):
     smtp_server_host = "localhost"
     smtp_port = 1025
     sender_email = "admin@gmail.com"
@@ -22,7 +24,13 @@ def send_mail(email,email_content,subject):
     msg["To"] = email
     msg["Subject"] = subject
 
-    # Attach the HTML content to the email
+    if a:
+        with open(a, "rb") as f:
+            part = MIMEBase("application", "octet-stream")
+            part.set_payload(f.read())
+            encoders.encode_base64(part)
+        part.add_header("Content-Disposition", "attachment", filename=a)
+        msg.attach(part)
     msg.attach(MIMEText(email_content, "html"))
     server.sendmail(sender_email, email, msg.as_string())
     print("Mail Sent")
@@ -90,3 +98,14 @@ def monthly_reminder():
         else:
             report = get_html_report("No service requests made", cust.name, "no_requests")
             send_mail(cust.email, report, "Monthly Report")
+
+@celery.task
+def admin_asyncReport(service_requests, email):
+    with open("dataExport.csv", "w", newline="") as f:
+        fieldnames=["serReq_id", "service_id","serv_desc", "service_date",'servicer_id', "custname",'created_date','cust_id','completed_date', "servicername", "status", "price"]
+        wr = csv.DictWriter(f, fieldnames=fieldnames)
+        wr.writeheader()
+        wr.writerows(service_requests)
+    send_mail(email, "CSV file attached", "Service Requests Report", "dataExport.csv")
+    
+

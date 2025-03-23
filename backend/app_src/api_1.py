@@ -419,7 +419,8 @@ class adminSummary(Resource):
     def get(self):
         c=CustomerDetails.query.all()
         s1=ServiceRequest.query.all()
-        totalCustomers=len(c)
+        s2=Servicer.query.all()
+        totalCustomers, totalServicer=len(c), len(s2)
         requested, rejected, accepted, completed = 0,0,0,0
         s1=ServiceRequest.query.all()
         for i in s1:
@@ -433,7 +434,7 @@ class adminSummary(Resource):
                 completed+=1
         c_1=CustomerDetails.query.filter_by(flags=1).all()
         blockedCust, activeCust = len(c_1), totalCustomers-len(c_1)
-        return {"data_1":[requested, rejected, accepted, completed], "data_2":[blockedCust, activeCust]}, 200
+        return {"data_1":[requested, rejected, accepted, completed], "data_2":[blockedCust, activeCust],"data_3":[totalCustomers, totalServicer]}, 200
 
 
 class getCustomerDetails(Resource):

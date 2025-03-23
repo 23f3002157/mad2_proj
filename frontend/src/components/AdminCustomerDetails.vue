@@ -1,10 +1,12 @@
 <template>
-  <div class="container">
-    <div class="d-flex flex-column align-items-center">
-      <h1 class="text-center mb-4">Customer Details</h1>
-      <h2>Regular Active Cutomers</h2>
-      <table class="table table-striped">
-        <thead>
+  <div class="container mt-4">
+    <div class="text-center">
+      <h1 class="mb-4">Customer Details</h1>
+    </div>
+    <h2 class="mb-3 text-primary">Regular Active Customers</h2>
+    <div class="table-responsive">
+      <table class="table table-striped table-bordered">
+        <thead class="table-dark">
           <tr>
             <th>Name</th>
             <th>Email</th>
@@ -17,22 +19,21 @@
         </thead>
         <tbody>
           <tr v-for="customer in customers" :key="customer.cust_id">
-              <td v-if="customer.flag != 1">{{ customer.name }}</td>
-              <td v-if="customer.flag != 1">{{ customer.email }}</td>
-              <td v-if="customer.flag != 1">{{ customer.address }}</td>
-              <td v-if="customer.flag != 1">{{ customer.city }}</td>
-              <td v-if="customer.flag != 1">{{ customer.postcode }}</td>
-              <td v-if="customer.flag != 1">{{ customer.flag }}</td>
-            <td v-if="customer.flag != 1"><button class="btn btn-danger" @click="blockCustomer(customer.cust_id)">Block</button></td>
-
+            <td v-if="customer.flag != 1">{{ customer.name }}</td>
+            <td v-if="customer.flag != 1">{{ customer.email }}</td>
+            <td v-if="customer.flag != 1">{{ customer.address }}</td>
+            <td v-if="customer.flag != 1">{{ customer.city }}</td>
+            <td v-if="customer.flag != 1">{{ customer.postcode }}</td>
+            <td v-if="customer.flag != 1">{{ customer.flag }}</td>
+            <td v-if="customer.flag != 1"><button class="btn btn-danger btn-sm" @click="blockCustomer(customer.cust_id)">Block</button></td>
           </tr>
         </tbody>
       </table>
-  </div>
-  <br><br>
-  <h2>Blocked Customers</h2>
-      <table class="table table-striped">
-        <thead>
+    </div>
+    <h2 class="mt-4 mb-3 text-danger">Blocked Customers</h2>
+    <div class="table-responsive">
+      <table class="table table-striped table-bordered">
+        <thead class="table-dark">
           <tr>
             <th>Name</th>
             <th>Email</th>
@@ -40,82 +41,80 @@
             <th>City</th>
             <th>Postcode</th>
             <th>Flags</th>
-            <th>Block</th>
+            <th>Unblock</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="customer in customers" :key="customer.cust_id">
-              <td v-if="customer.flag != 0">{{ customer.name }}</td>
-              <td v-if="customer.flag != 0">{{ customer.email }}</td>
-              <td v-if="customer.flag != 0">{{ customer.address }}</td>
-              <td v-if="customer.flag != 0">{{ customer.city }}</td>
-              <td v-if="customer.flag != 0">{{ customer.postcode }}</td>
-              <td v-if="customer.flag != 0">{{ customer.flag }}</td>
-              <td v-if="customer.flag != 0"><button class="btn btn-success" @click="unblockCustomer(customer.cust_id)">Unblock</button></td>
+            <td v-if="customer.flag != 0">{{ customer.name }}</td>
+            <td v-if="customer.flag != 0">{{ customer.email }}</td>
+            <td v-if="customer.flag != 0">{{ customer.address }}</td>
+            <td v-if="customer.flag != 0">{{ customer.city }}</td>
+            <td v-if="customer.flag != 0">{{ customer.postcode }}</td>
+            <td v-if="customer.flag != 0">{{ customer.flag }}</td>
+            <td v-if="customer.flag != 0"><button class="btn btn-success btn-sm" @click="unblockCustomer(customer.cust_id)">Unblock</button></td>
           </tr>
         </tbody>
       </table>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
   name: 'AdminCustomerDetails',
-  data(){
+  data() {
     return {
-        customers:[],
-    }
+      customers: [],
+    };
   },
-  methods : {
-    getCustomers : function(){
-        const response = fetch("http://127.0.0.1:5000/getCustomers",{
-            method:"GET",
-            headers:{
-                'Content-Type': 'application/json'
-            },
-        }).then(response => response.json())
-        .then(data => {
-            this.customers = data;
-            console.log(this.customers);
-        })
+  methods: {
+    getCustomers() {
+      fetch("http://127.0.0.1:5000/getCustomers", {
+        method: "GET",
+        headers: {
+          'Content-Type': 'application/json'
+        },
+      })
+      .then(response => response.json())
+      .then(data => {
+        this.customers = data;
+      })
+      .catch(error => console.error("Error fetching customers:", error));
     },
-    async blockCustomer(customer_id){
-    try{
-      
-      console.log(customer_id);
-      const response = await fetch(`http://127.0.0.1:5000/adminDashboard/customerBlock/${customer_id}`,{
-        method:"PUT",
-        headers:{
+    async blockCustomer(customer_id) {
+      try {
+        const response = await fetch(`http://127.0.0.1:5000/adminDashboard/customerBlock/${customer_id}`, {
+          method: "PUT",
+          headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${localStorage.getItem("adminAuthToken")}`
-        },
-      }).then(response => response.json())
-      alert(response.message);
-      this.getCustomers();
-    }catch(e){
-      console.log(e);
-    }
-  },
-  async unblockCustomer(customer_id){
-    try{
-      console.log(customer_id);
-      const response = await fetch(`http://127.0.0.1:5000/adminDashboard/customerBlock/${customer_id}`,{
-        method:"PATCH",
-        headers:{
+          },
+        }).then(response => response.json());
+        alert(response.message);
+        this.getCustomers();
+      } catch (e) {
+        console.error(e);
+      }
+    },
+    async unblockCustomer(customer_id) {
+      try {
+        const response = await fetch(`http://127.0.0.1:5000/adminDashboard/customerBlock/${customer_id}`, {
+          method: "PATCH",
+          headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${localStorage.getItem("adminAuthToken")}`
-        },
-      }).then(response => response.json())
-      alert(response.message);
-      this.getCustomers();
-    }catch(e){
-      console.log(e);
+          },
+        }).then(response => response.json());
+        alert(response.message);
+        this.getCustomers();
+      } catch (e) {
+        console.error(e);
+      }
     }
-  }
   },
-    mounted(){
+  mounted() {
     this.getCustomers();
   }
-
-}
+};
 </script>

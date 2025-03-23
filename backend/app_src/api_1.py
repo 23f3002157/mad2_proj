@@ -240,6 +240,7 @@ class customerSearch(Resource):
             return {"message":"Something went wrong", "stat":0}, 400
 
 class customerSummary(Resource):
+    @cache.cached(timeout=15)
     @jwt_required()
     def get(self):
         cust_id = get_jwt_identity()
@@ -415,6 +416,7 @@ class adminSearch(Resource):
             return {"message":"Something went wrong", "stat":0}, 400
 
 class adminSummary(Resource):
+    @cache.cached(timeout=10)
     @jwt_required()
     def get(self):
         c=CustomerDetails.query.all()
@@ -549,7 +551,10 @@ class getServiceRequestsServicer(Resource):
         s1=ServiceRequest.query.filter_by(servicer_id=servicer_id).all()
         l=[]
         for s in s1:
-            l.append(s.convert_to_json())
+            d=s.convert_to_json()
+            s2=Service.query.filter_by(service_ID=s.service_id).first()
+            d["service_Description"]=s2.service_Description
+            l.append(d)
         return {"data":l, "stat":1}, 200
 
 class updateRequestServicer(Resource):

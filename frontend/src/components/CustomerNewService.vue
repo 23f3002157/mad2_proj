@@ -8,15 +8,14 @@
               <h5 class="card-title">{{ service.service_description }}</h5>
               <p class="card-text">Price: {{ service.price }}</p>
               <p class="card-text">Service ID: {{ service.service_ID }}</p>
-              <p class="card-text">Category: {{ service.sCat_id }}</p>
+              <p class="card-text">Category: {{ service.ser_desc }}</p>
               <button @click="openEditModal(service)" class="btn btn-primary">BOOK</button>
             </div>
           </div>
         </div>
       </div>
     </div>
-  
-    <!-- Modal -->
+
     <div class="modal fade" id="editServiceModal" tabindex="-1" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">

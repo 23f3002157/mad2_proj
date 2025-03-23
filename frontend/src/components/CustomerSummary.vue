@@ -1,52 +1,41 @@
 <template>
-    <div class="container">
-      <h1 class="text-center mb-4">Summary</h1>
-      <div class="row justify-content-center">
-        <div class="col-md-4">
-          <div class="card mb-3">
-            <div class="card-body">
-              <h5 class="card-title">Total Service Requests</h5>
-              <p class="card-text">{{ totalRequests }}</p>
-            </div>
+  <div class="container mt-4">
+    <h2 class="text-center text-primary mb-4">Dashboard Summary</h2>
+    <div class="row justify-content-center">
+      <div class="col-md-4">
+        <div class="card shadow-sm border-primary mb-3">
+          <div class="card-body text-center">
+            <h5 class="card-title text-primary">Total Service Requests</h5>
+            <p class="card-text display-5 fw-bold">{{ totalRequests }}</p>
           </div>
         </div>
-        <div class="col-md-4">
-          <div class="card mb-3">
-            <div class="card-body">
-              <h5 class="card-title">Requested Services</h5>
-              <p class="card-text">{{ totalPending }}</p>
-            </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card shadow-sm border-warning mb-3">
+          <div class="card-body text-center">
+            <h5 class="card-title text-warning">Requested Services</h5>
+            <p class="card-text display-5 fw-bold">{{ totalPending }}</p>
           </div>
         </div>
-        <div class="col-md-4">
-          <div class="card mb-3">
-            <div class="card-body">
-              <h5 class="card-title">Completed Services</h5>
-              <p class="card-text">{{ totalCompleted }}</p>
-            </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card shadow-sm border-success mb-3">
+          <div class="card-body text-center">
+            <h5 class="card-title text-success">Completed Services</h5>
+            <p class="card-text display-5 fw-bold">{{ totalCompleted }}</p>
           </div>
         </div>
       </div>
     </div>
-    <div class="d-flex justify-content-center gap-3"> 
-    <div style="width: 500px">
-      <Bar v-if="l"
-        id="my-chart-id"
-        :options="chartOptions"
-        :data="chartData"
-      />
-    </div>
-  
-    <div style="width: 500px">
-      <Bar v-if="0"
-        id="my-chart-id-1"
-        :options="chartOptions_1"
-        :data="chartData_1"
-      />
+
+    <div class="d-flex justify-content-center gap-4 flex-wrap"> 
+      <div class="chart-container" style="width: 700px; height: 500px;">
+        <Bar v-if="l" id="chart-1" :options="chartOptions" :data="chartData" />
+      </div>
     </div>
   </div>
-  </template>
-  
+</template>
+
   <script>
   import { Bar } from 'vue-chartjs'
   import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js'

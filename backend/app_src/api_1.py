@@ -600,7 +600,7 @@ class closeServiceCutomer(Resource):
         if s1.rating==0:
             s1.rating=int(data.get("rating"))
         else:
-            x=(s1.rating+int(data.get("rating")))/2
+            x=round((s1.rating+int(data.get("rating")))/2, 3)
             s1.rating=x
         db.session.add(f)
         db.session.commit()

@@ -46,12 +46,12 @@ def get_html_report(data, name, filename):
 def setup_periodic_tasks(sender, **kwargs):
     #sender.add_periodic_task(30.0, monthly_reminder.s(), name='add every 30')
     sender.add_periodic_task(
-        crontab(hour=23, minute=34),
+        crontab(hour=19, minute=57),
         daily_remainder.s(),
         name="Daily Remainder at 6:30 PM"
     )
     sender.add_periodic_task(
-        crontab(hour=23, minute=34, day_of_month='23', month_of_year='*'),
+        crontab(hour=19, minute=57, day_of_month='24', month_of_year='*'),
         monthly_reminder.s(),
         name="Monthly Customer Reminder"
     )
@@ -76,7 +76,7 @@ def daily_remainder():
                     pendingRequests.append(d)
             
             report = get_html_report(pendingRequests, curr.firstname+" "+curr.lastname, "report")
-            send_mail(curr.email, report,"Remainders - Pending Service Requests")
+            send_mail(curr.email, report,"Reminders - Pending Service Requests")
 
 
 @celery.task

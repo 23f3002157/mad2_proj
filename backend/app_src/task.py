@@ -44,7 +44,7 @@ def get_html_report(data, name, filename):
 
 @celery.on_after_configure.connect
 def setup_periodic_tasks(sender, **kwargs):
-    #sender.add_periodic_task(30.0, monthly_reminder.s(), name='add every 30')
+    sender.add_periodic_task(30.0, daily_remainder.s(), name='add every 30')
     sender.add_periodic_task(
         crontab(hour=19, minute=57),
         daily_remainder.s(),
@@ -74,9 +74,9 @@ def daily_remainder():
                     d=serReq.convert_to_json()
                     d["service_Description"] = s2.service_Description
                     pendingRequests.append(d)
-            
-            report = get_html_report(pendingRequests, curr.firstname+" "+curr.lastname, "report")
-            send_mail(curr.email, report,"Reminders - Pending Service Requests")
+            if(len(pendingRequests)!=0):
+                report = get_html_report(pendingRequests, curr.firstname+" "+curr.lastname, "report")
+                send_mail(curr.email, report,"Reminders - Pending Service Requests")
 
 
 @celery.task
